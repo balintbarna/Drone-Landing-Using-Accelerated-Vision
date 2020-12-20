@@ -1,0 +1,1 @@
+[Board setup](board_setup/index.md)
