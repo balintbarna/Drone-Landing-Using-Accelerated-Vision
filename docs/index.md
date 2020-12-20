@@ -1,1 +1,2 @@
-[Board setup](board_setup/index.md)
+#. [Board setup](board/setup.md)
+#. [Ros setup](ros/setup.md)
