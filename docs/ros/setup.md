@@ -21,3 +21,22 @@ function dronebuild {
 }
 export -f dronebuild
 ```
+
+Creating a new python package
+```
+ros2 pkg create --build-type ament_python --node-name my_node my_package
+```
+
+Adding new python nodes requires adding them to the *entry_points* in *setup.py*
+
+New C++ package
+```
+ros2 pkg create --build-type ament_cmake --node-name my_node my_package
+```
+
+It is possible, but complicated, to create mixed packages.
+
+Running a node
+```
+ros2 run my_package my_node
+```
