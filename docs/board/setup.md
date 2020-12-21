@@ -43,7 +43,7 @@ Using ssh is also a good option to get a terminal interface.
 
 After getting internet, the next step is to update packages. I could only run this as *root*, not as user *xilinx*. It is advised that you only do anything as root when you must.
 ```
-sudo apt update && apt upgrade -y
+sudo apt update && sudo apt upgrade -y
 ```
 
 If you are using the board GUI or your own Linux GUI, terminator is useful. The default terminal on the board is especially bad.
