@@ -8,15 +8,15 @@ If you're setting up the board with a display and keyboard + mouse, the next par
 
 # First connection
 
-Connect a micro-USB cable to the board, and connect the other end to your PC. The board will be reachable on the network as *pynq*. Open the address in the browser to connect to the Jupyter notebooks.
+If you have a USB-Ethernet dongle and router connected to the internet, that's the easiest way to set things up. In that case, connecting through microUSB and the Wifi notebook is not necessary, and you can skip ahead. Otherwise, connect a micro-USB cable to the board, and connect the other end to your PC. The board will be reachable on the network as *pynq*. Open the address in the browser to connect to the Jupyter notebooks.
 
-You can also coonect to the board with ```ssh xilinx@pynq```.
+You can also connect to the board with ```ssh xilinx@pynq```.
 
 The password is *xilinx* for both the notebooks and ssh.
 
 # First wifi connection
 
-You need an internet connection and there is no Ethernet. Set up wifi with the common/wifi notebook in Jupyter.
+You need an internet connection to install things and there is no Ethernet. Set up wifi with the common/wifi notebook in Jupyter.
 Modify the end of the notebook, so that it waits for an input before closing the port.
 This way you can explicitly close the wifi connection later easily.
 ```
@@ -63,7 +63,7 @@ Also get WinSCP to manage files over SSH.
 scoop install terminus winscp
 ```
 
-Add the fingerprint of your SSH client from PowerShell for passwordless login. If you haven't yet, you need to generate your ssh keys with *ssh-keygen*, and create the folder structure on the target first.
+Add the fingerprint of your SSH client from PowerShell for passwordless login. If you haven't yet, you need to generate your ssh keys with *ssh-keygen*, and create the folder structure on the target first. From linux, use ssh-copy-id instead.
 ```
 cat ~/.ssh/id_rsa.pub | ssh xilinx@pynq "cat >> ~/.ssh/authorized_keys"
 ```
@@ -73,11 +73,25 @@ Your board's CPUs are locked at max frequency, so it will heat up regardless of 
 
 # Comfortable wifi setup
 
-Relying on the wifi notebook is not the best, because it does not connect automatically. NetworkManager works just fine though.
+Relying on the wifi notebook is not the best, because it does not connect automatically. NetworkManager helps with that.
 ```
 sudo apt install network-manager
 ```
-After a reboot, NetworkManager should start automatically. If not, use ```sudo systemctl start NetworkManager``` and ```sudo systemctl enable NetworkManager```. With the command *nmtui* you get a terminal UI that helps you connect to WIFI networks. It also saves connected networks and auto-connects next time. This can help you avoid needing a USB cable every single time.
+After a reboot, NetworkManager should start automatically. If not, use ```sudo systemctl start NetworkManager``` and ```sudo systemctl enable NetworkManager```. With the command *nmtui* you get a terminal UI that helps you connect to WIFI networks. It also saves connected networks and auto-connects next time. This can help you avoid needing a USB or Ethernet cable every time.
+
+# Bionic updates repository
+
+Ubuntu usually comes with the updates repository added, but this version does not. This leads to many packages not installing correctly, because of unfulfillable dependencies. Add this to your sources in ```/etc/apt/sources.list.d/multistrap-bionic.list```
+```
+deb http://ports.ubuntu.com/ubuntu-ports bionic-updates main
+```
+
+It should look something like this
+```
+deb http://ports.ubuntu.com/ubuntu-ports bionic main universe
+deb-src http://ports.ubuntu.com/ubuntu-ports bionic main universe
+deb http://ports.ubuntu.com/ubuntu-ports bionic-updates main
+```
 
 # JupyterLab
 
@@ -88,11 +102,11 @@ Adding a Git client is possible with [jupyterlab-git](https://github.com/jupyter
 
 # VSCode
 
-It is possible to use VSCode with SSH Remote. I had some trouble installing it for the first time, but later on it started working for no apparent reason, this could be because of an update. If there is an issue, delete *.vscode-server/* in your user home folder and try to initialize it again.
+It is possible to use VSCode with SSH Remote. I had some trouble installing it for the first time, but on a later attempt it worked, this could be because of an update. If there is an issue, delete *.vscode-server/* in your user home folder and try to connect again.
 
 Having VSCode working is very beneficial. Git client, code editors, debugging tools, and file management comes built in, with many extra features available through extensions.
 
-Installing VSCode directly on the board to be used in the GUI environment did not work.
+Installing VSCode directly on the board to be used in the GUI environment did not work. There are no error messages but the GUI does not launch.
 
 # ROS
 
