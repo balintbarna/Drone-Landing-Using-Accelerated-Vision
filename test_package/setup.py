@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'pixhawk_sub = test_package.pixhawk_sub:main',
             'simple_pub = test_package.simple_pub:main',
             'simple_sub = test_package.simple_sub:main',
             'hello_node = test_package.hello_node:main'
