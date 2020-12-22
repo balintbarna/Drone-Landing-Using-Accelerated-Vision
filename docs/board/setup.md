@@ -93,6 +93,13 @@ deb-src http://ports.ubuntu.com/ubuntu-ports bionic main universe
 deb http://ports.ubuntu.com/ubuntu-ports bionic-updates main
 ```
 
+# Docker
+
+Use this modified command to add the sources list. Installing docker requires the bionic-updates repo. Use the official installation [guide](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) otherwise.
+```
+sudo echo "deb [arch=arm64] https://download.docker.com/linux/ubuntu bionic stable" > /etc/apt/sources.list.d/docker.list
+```
+
 # JupyterLab
 
 To open JupyterLab, go to <http://pynq:9090/lab>.
