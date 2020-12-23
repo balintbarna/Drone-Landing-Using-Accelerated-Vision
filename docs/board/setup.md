@@ -135,7 +135,7 @@ After this change you can follow the install [guide](http://wiki.ros.org/melodic
 
 ## ROS2
 
-Dashing is the latest version that can be installed on the board. Instead of
+Instead of
 ```
 sudo sh -c 'echo "deb [arch=$(dpkg --print-architecture)] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list'
 ```
