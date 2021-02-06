@@ -1,0 +1,5 @@
+{
+    "image": "drone-project:latest",
+    "workspaceFolder": "/workspace",
+    "workspaceMount": "source=/home/xilinx/src,target=/workspace,type=bind,consistency=cached"
+}
