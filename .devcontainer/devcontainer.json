@@ -1,5 +1,12 @@
 {
     "image": "drone-project:latest",
     "workspaceFolder": "/workspace",
-    "workspaceMount": "source=/home/xilinx/src,target=/workspace,type=bind,consistency=cached"
+    "workspaceMount": "source=/home/xilinx/src/Drone-Landing-Using-Accelerated-Vision,target=/workspace,type=bind,consistency=cached",
+    "runArgs": [
+        "--privileged",
+        "--rm"
+    ],
+    "overrideCommand": false,
+    "extensions": [],
+    "settings": {}
 }
