@@ -1,12 +1,18 @@
 {
     "image": "drone-project:latest",
     "workspaceFolder": "/workspace",
-    "workspaceMount": "source=/home/xilinx/src/Drone-Landing-Using-Accelerated-Vision,target=/workspace,type=bind,consistency=cached",
+    "workspaceMount": "source=/home/xilinx/catkin_ws/,target=/workspace,type=bind,consistency=cached",
     "runArgs": [
-        "--privileged",
-        "--rm"
+        // "--privileged",
+        "--rm",
     ],
-    "overrideCommand": false,
-    "extensions": [],
-    "settings": {}
+    "extensions": [
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "ms-toolsai.jupyter",
+        "ms-python.python",
+        "ms-iot.vscode-ros",
+    ],
+    "settings": {},
+    "postCreateCommand": "echo \"source /workspace/devel/setup.bash\" >> /etc/bash.bashrc",
 }
