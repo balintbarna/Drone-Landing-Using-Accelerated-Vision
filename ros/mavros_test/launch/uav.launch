@@ -2,7 +2,7 @@
 <launch>
     <rosparam file="$(find mavros_test)/config/uav.yaml" />
     <arg name="ID" default="1"/>
-    <arg name="fcu_url" default="udp://:14540@localhost:14557"/>
+	<arg name="fcu_url" default="/dev/ttyACM0:57600" />
 
     <!-- MAVROS -->
     <include file="$(find mavros)/launch/px4.launch">
