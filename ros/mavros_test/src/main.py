@@ -29,6 +29,12 @@ class MainNode():
     
     def loop(self):
         while (True):
+            if self.mav.UAV_state.mode != "OFFBOARD":
+                self.mav.set_mode(0, 'OFFBOARD')
+                #rospy.loginfo("enabling offboard mode")
+            if not self.mav.UAV_state.armed:
+                if self.mav.set_arming(True):
+                    pass
             rospy.loginfo(self.mav.UAV_state)
             self.rate.sleep()
 
