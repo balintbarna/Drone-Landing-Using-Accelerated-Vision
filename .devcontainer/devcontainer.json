@@ -3,7 +3,7 @@
     "workspaceFolder": "/workspace",
     "workspaceMount": "source=/home/xilinx/catkin_ws/,target=/workspace,type=bind,consistency=cached",
     "runArgs": [
-        // "--privileged",
+        "--privileged",
         "--rm",
     ],
     "extensions": [
