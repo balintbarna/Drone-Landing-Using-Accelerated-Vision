@@ -1,15 +1,9 @@
 <?xml version="1.0"?>
 <launch>
     <rosparam file="$(find mavros_test)/config/uav.yaml" />
-    <arg name="ID" default="1"/>
-	<arg name="fcu_url" default="/dev/ttyACM0:57600" />
 
     <!-- MAVROS -->
     <include file="$(find mavros)/launch/px4.launch">
-        <arg name="fcu_url" value="$(arg fcu_url)"/>
-        <arg name="gcs_url" value=""/>
-        <arg name="tgt_system" value="$(arg ID)"/>
-        <arg name="tgt_component" value="1"/>
     </include>
 
     <!-- Control -->
