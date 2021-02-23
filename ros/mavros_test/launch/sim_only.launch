@@ -10,8 +10,9 @@
 
     <!-- vehicle model and world -->
     <arg name="vehicle" default="iris"/>
+    <arg name="vehicle_model" default="iris_downward_depth_camera" />
     <arg name="world" default="$(find mavlink_sitl_gazebo)/worlds/baylands.world"/>
-    <arg name="sdf" default="$(find mavlink_sitl_gazebo)/models/$(arg vehicle)/$(arg vehicle).sdf"/>
+    <arg name="sdf" default="$(find mavlink_sitl_gazebo)/models/$(arg vehicle_model)/$(arg vehicle_model).sdf"/>
 
     <!-- gazebo configs -->
     <arg name="debug" default="false"/>
