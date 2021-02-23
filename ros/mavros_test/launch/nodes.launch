@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <rosparam file="$(find mavros_test)/config/uav.yaml" />
+
+    <!-- Control -->
+    <node name="main" pkg="mavros_test" type="main.py" output="screen"/>
+</launch>
