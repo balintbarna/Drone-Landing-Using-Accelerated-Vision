@@ -10,7 +10,7 @@ function simsrc {
   source $PX4FW/Tools/setup_gazebo.bash $PX4FW $PX4FW/build/px4_sitl_default
   export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$PX4FW
   export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$PX4FW/Tools/sitl_gazebo
-  echo simsrc
+  echo "simsrc done"
 }
 export -f simsrc
 echo "new command: simsrc"
@@ -20,7 +20,7 @@ function simbld {
   cd $ROSWS
   catkin_make
   simsrc
-  echo simbld
+  echo "simbld done"
 }
 export -f simbld
 echo "new command: simbld"
