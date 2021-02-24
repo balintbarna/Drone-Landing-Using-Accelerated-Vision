@@ -6,20 +6,18 @@ import rospy
 import mavros
 import mavros.setpoint
 import mavros.command
-from mavros_msgs.msg import State, PositionTarget
+from mavros_msgs.msg import State
 import mavros_msgs.srv
-from geometry_msgs.msg import TwistStamped, PoseStamped, PoseWithCovarianceStamped, Vector3, Vector3Stamped, Point, Quaternion, Pose
-from tf.transformations import euler_from_quaternion, quaternion_from_euler
+from geometry_msgs.msg import TwistStamped, PoseStamped, Point
 # own libs
 from mavros_driver.message_tools import create_setpoint_message_pos_yaw, orientation_to_yaw, point_to_arr, create_setpoint_message_pos_ori, arr_to_point
 
 class Mav():
     def __init__(self, namespace = "mavros"):
-        self.rate = rospy.Rate(20)
         self.current_pose = PoseStamped()
         self.current_velocity = TwistStamped()
         self.target_pose = PoseStamped()
-        self.UAV_state = mavros_msgs.msg.State()
+        self.state = State()
 
         mavros.set_namespace(namespace)
 
@@ -34,23 +32,31 @@ class Mav():
         # setup service
         self.set_arming = rospy.ServiceProxy(mavros.get_topic('cmd', 'arming'), mavros_msgs.srv.CommandBool)
         self.set_mode = rospy.ServiceProxy(mavros.get_topic('set_mode'), mavros_msgs.srv.SetMode)
+    
+    def _timer_callback(self, timerEvent):
+        self.arm_and_offboard()
+        self.publish_target_pose()
 
     def _state_callback(self, topic):
-        self.UAV_state.armed = topic.armed
-        self.UAV_state.connected = topic.connected
-        self.UAV_state.mode = topic.mode
-        self.UAV_state.guided = topic.guided
+        self.state = topic
 
     def _local_position_callback(self, topic):
         self.current_pose = topic
-        self._publish_target_pose()
 
     def _local_velocity_callback(self, topic):
         self.current_velocity = topic
     
-    def _publish_target_pose(self):
+    def arm_and_offboard(self):
+        if self.state.mode != "OFFBOARD":
+            self.set_mode(0, 'OFFBOARD')
+        if not self.state.armed:
+            if self.set_arming(True):
+                pass
+    
+    def publish_target_pose(self):
         # self._setpoint_local_pub.publish(self.target_pose)
         self._setpoint_local_pub.publish(self.distance_limited_target())
+        pass
     
     def distance_limited_target(self):
         point = self.target_pose.pose.position
@@ -65,14 +71,6 @@ class Mav():
         true_target = current + diff / ratio
         new_point = arr_to_point(true_target)
         return create_setpoint_message_pos_ori(new_point, self.target_pose.pose.orientation)
-
-    def wait_for_connection(self):
-        while (not self.UAV_state.connected):
-            self.rate.sleep()
-
-    def wait_for_arrival(self):
-        while not self.has_arrived():
-            self.rate.sleep()
     
     def has_arrived(self):
         maxdist = 0.5 # m
@@ -130,3 +128,9 @@ class Mav():
         pos = self.target_pose.pose.position
         pose = create_setpoint_message_pos_yaw(pos, yaw)
         self.set_target_pose(pose)
+    
+    def start(self):
+        self.timer = rospy.Timer(rospy.Duration(1/20), self._timer_callback)
+
+    def is_ready(self):
+        return self.state.connected

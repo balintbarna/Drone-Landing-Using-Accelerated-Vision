@@ -20,27 +20,26 @@ from geometry_msgs.msg import TwistStamped, PoseStamped, PoseWithCovarianceStamp
 
 # import files in package
 from mavros_driver.mav import Mav
+from state_machine import StateMachine
 
 class MainNode():
     def __init__(self):
         rospy.init_node('main', anonymous=True)
-        self.rate = rospy.Rate(20)
         self.mav = Mav()
+        self.sm = StateMachine()
+        self.sm.mav = self.mav
+
+        self.stateMachineTimer = rospy.Timer(rospy.Duration(1/50), self.run_state)
     
-    def loop(self):
-        while (True):
-            if self.mav.UAV_state.mode != "OFFBOARD":
-                self.mav.set_mode(0, 'OFFBOARD')
-                #rospy.loginfo("enabling offboard mode")
-            if not self.mav.UAV_state.armed:
-                if self.mav.set_arming(True):
-                    pass
-            rospy.loginfo(self.mav.UAV_state)
-            self.rate.sleep()
+    def run_state(self, timerEvent):
+        self.sm.loop()
 
 def main():
     node = MainNode()
-    node.loop()
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        pass
 
 def signal_handler(signal, frame):
     print('You pressed Ctrl+C!')
