@@ -1,16 +1,16 @@
 <?xml version="1.0" ?>
 <sdf version="1.5">
-  <model name='iris_downward_depth_camera'>
+  <model name='custom_iris'>
     <include>
       <uri>model://iris</uri>
     </include>
 
     <include>
-      <uri>model://depth_camera</uri>
+      <uri>model://custom_cam</uri>
       <pose>0.1 0 0 0 1.5708 0</pose>
     </include>
     <joint name="depth_camera_joint" type="revolute">
-      <child>depth_camera::link</child>
+      <child>custom_cam::link</child>
       <parent>iris::base_link</parent>
       <axis>
         <xyz>0 0 1</xyz>
