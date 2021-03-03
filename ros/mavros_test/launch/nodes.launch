@@ -3,5 +3,6 @@
     <rosparam file="$(find mavros_test)/config/uav.yaml" />
 
     <!-- Control -->
-    <node name="main" pkg="mavros_test" type="main.py" output="screen"/>
+    <node name="main" pkg="mavros_test" type="main.py" output="screen" />
+    <node name="object_detector" pkg="mavros_test" type="object_detector.py" output="screen" />
 </launch>

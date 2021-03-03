@@ -16,6 +16,7 @@
     <!-- gazebo configs -->
     <arg name="debug" default="false"/>
     <arg name="verbose" default="false"/>
+    <arg name="gui" default="false"/>
 
     <!-- PX4 SITL and Gazebo and MAVROS -->
     <include file="$(find px4)/launch/mavros_posix_sitl.launch">
@@ -30,5 +31,6 @@
         <arg name="sdf" value="$(arg sdf)"/>
         <arg name="debug" value="$(arg debug)"/>
         <arg name="verbose" value="$(arg verbose)"/>
+        <arg name="gui" value="$(arg gui)"/>
     </include>
 </launch>

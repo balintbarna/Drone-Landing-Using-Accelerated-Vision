@@ -11,3 +11,4 @@
 1. Source `sim.bash` on every terminal session used for the simulation
 1. `sim.bash` registers a command to source relevant paths, like the path to the ROS Noetic distribution, the setup script of the catkin workspace, and the PX4 Autopilot related setup scripts. It also registers a command to build the catkin workspace, re-source it afterwards. To run the simulation the sourcing command needs to run first in each related terminal session.
 1. Call `roslaunch mavros_test sim.launch`
+1. Run Gazebo GUI with the `gzclient` command in a terminal.
