@@ -17,13 +17,34 @@ class MainNode():
     def __init__(self):
         self.bridge = CvBridge()
         rospy.init_node('object_detector', anonymous=True)
+
+        params_path = rospy.get_param("pkg_path") + "/resources/"
+        self.net = cv2.dnn.readNet(params_path + "yolov3.weights", params_path + "yolov3.cfg")
+        #To load all objects that have to be detected
+        self.classes = []
+        with open(params_path + "coco.names","r") as f:
+            read = f.readlines()
+        for i in range(len(read)):
+            self.classes.append(read[i].strip("\n"))
+        #Defining layer names
+        layer_names = self.net.getLayerNames()
+        self.output_layers = []
+        for i in self.net.getUnconnectedOutLayers():
+            self.output_layers.append(layer_names[i[0]-1])
+        rospy.logout("object detector initialized")
+
+        self.inferencing = False
         rospy.Subscriber("/camera/rgb/image_raw", Image, self.imageCallback, queue_size=1)
         self.pose_pub = rospy.Publisher("/landing_pose", PoseStamped, queue_size=1)
     
     def imageCallback(self, data):
+        if (self.inferencing):
+            return
+        self.inferencing = True
         img = self.getCvImage(data)
         relative_pose = self.find_object(img)
         self.pose_pub.publish(relative_pose)
+        self.inferencing = False
     
     def getCvImage(self, rosImage):
         try:
@@ -34,6 +55,48 @@ class MainNode():
         return None
     
     def find_object(self, img):
+        height, width, channels = img.shape
+        # rospy.logout("height: {}\nwidth: {}\nchannels: {}\n".format(height, width, channels))
+        blob = cv2.dnn.blobFromImage(img, 0.00392, (416,416), (0,0,0), True, crop=False)
+        self.net.setInput(blob)
+        outs=self.net.forward(self.output_layers)
+        class_ids=[]
+        confidences=[]
+        boxes=[]
+        for output in outs:
+            for detection in output:
+                #Detecting confidence in 3 steps
+                scores = detection[5:]            #1
+                class_id = np.argmax(scores)      #2
+                confidence = scores[class_id]     #3
+                if confidence > 0.5: #Means if the object is detected
+                    center_x = int(detection[0]*width)
+                    center_y = int(detection[1]*height)
+                    w = int(detection[2]*width)
+                    h = int(detection[3]*height)
+                    #Drawing a rectangle
+                    x = int(center_x-w/2) # top left value
+                    y = int(center_y-h/2) # top left value
+                    boxes.append([x,y,w,h])
+                    confidences.append(float(confidence))
+                    class_ids.append(class_id)
+                    cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+        
+        #Removing Double Boxes
+        indexes=cv2.dnn.NMSBoxes(boxes,confidences,0.3,0.4)
+        for i in range(len(boxes)):
+            if i in indexes:
+                x, y, w, h = boxes[i]
+                label = self.classes[class_ids[i]]  # name of the objects
+                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                cv2.putText(img, label, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
+            
+        cv2.imshow("Output",img)
+        cv2.waitKey(1)
+
+        return self.generate_pose()
+    
+    def generate_pose(self):
         pose = PoseStamped()
         return pose
 

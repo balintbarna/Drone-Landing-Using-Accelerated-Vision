@@ -30,7 +30,7 @@ class StateMachine():
     def startup(self):
         if (self.mav.is_ready()):
             new_target = create_setpoint_message_pose(self.mav.current_pose.pose)
-            new_target.pose.position.z = new_target.pose.position.z + 5
+            new_target.pose.position.z = new_target.pose.position.z + 10
             self.mav.set_target_pose(new_target)
             self.mav.start()
             self.set_state(self.takeoff)
