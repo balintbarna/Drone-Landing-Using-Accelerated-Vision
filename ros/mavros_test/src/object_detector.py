@@ -128,8 +128,8 @@ class MainNode():
         h /= height
         size = w*h
         p = Point()
-        p.x = x - 0.5
-        p.y = y - 0.5
+        p.x = x*2 + w - 1
+        p.y = y*2 + h - 1
         p.z = 1 - size
         return p
 
