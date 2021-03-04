@@ -8,12 +8,13 @@ from geometry_msgs.msg import Point
 class PointPid():
     def __init__(self):
         base = rospy.get_param("pid_param_base", 1.0)
+        spz = rospy.get_param("target_altitude_from_target", 0.15)
         px = base
         py = base
-        pz = base / 2
+        pz = base
         self.x = PID(Kp = px, Kd = px/10)
         self.y = PID(Kp = py, Kd = py/10)
-        self.z = PID(Kp = pz, Kd = pz/10)
+        self.z = PID(Kp = pz, Kd = pz/10, setpoint = spz)
 
 class Transformer():
     def __init__(self):

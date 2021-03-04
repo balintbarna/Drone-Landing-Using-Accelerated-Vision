@@ -1,6 +1,8 @@
 gpu: true
 fps_filter_ratio: 0.9
 target_label: "stop sign"
-pid_param_base: 0.2
+pid_param_base: 0.3
 dist_filter_ratio: 0.9
-xy_max_err: 0.2
+xy_max_err: 0.05
+xyz_max_err_before_landing: 0.01
+target_altitude_from_target: 0.35

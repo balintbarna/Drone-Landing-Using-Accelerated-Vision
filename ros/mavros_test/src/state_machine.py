@@ -16,6 +16,7 @@ class StateMachine():
         self.filtered_distance = math.inf
         self.dist_filter_ratio = rospy.get_param("dist_filter_ratio", 0.9)
         self.xy_max_err = rospy.get_param("xy_max_err", 0.2)
+        self.xyz_max_err_before_landing = rospy.get_param("xyz_max_err_before_landing", 0.1)
         rospy.Subscriber("/landing_pos_error/transformed", Point, self.landing_pose_callback)
     
     def landing_pose_callback(self, p = Point()):
@@ -62,15 +63,39 @@ class StateMachine():
             return
         err = self.landing_pose
         self.landing_pose = None
+        err.z = 0
+        if (self.get_filtered_distance(err) < self.xy_max_err):
+            self.filtered_distance = math.inf
+            self.set_state(self.inch_lower_above_target)
+            return
+        self.set_mav_pos_from_err(err)
+    
+    def inch_lower_above_target(self):
+        if (self.landing_pose == None):
+            return
+        err = self.landing_pose
+        self.landing_pose = None
+        if (self.get_filtered_distance(err) < self.xyz_max_err_before_landing):
+            self.filtered_distance = math.inf
+            self.set_state(self.loiter)
+            return
+        z = err.z
+        err.z = 0
+        if (get_point_magnitude(err) > self.xy_max_err):
+            self.filtered_distance = math.inf
+            self.set_state(self.inch_above_target)
+            return
+        err.z = z
+        self.set_mav_pos_from_err(err)
+
+    def set_mav_pos_from_err(self, err):
         new_target = create_setpoint_message_pose(self.mav.current_pose.pose)
         cpos = new_target.pose.position
         cpos.x -= err.x
         cpos.y -= err.y
+        cpos.z -= err.z
         self.mav.set_target_pose(new_target)
-        err.z = 0
-        if (self.get_filtered_distance(err) < self.xy_max_err):
-            self.set_state(self.loiter)
-        
+
     def get_filtered_distance(self, p = Point):
         d = get_point_magnitude(p)
         if (self.filtered_distance == math.inf):
