@@ -17,9 +17,18 @@ class MainNode():
     def __init__(self):
         self.bridge = CvBridge()
         rospy.init_node('object_detector', anonymous=True)
-
+        self.setupNet()
+        rospy.Subscriber("/camera/rgb/image_raw", Image, self.imageCallback, queue_size=1)
+        self.pose_pub = rospy.Publisher("/landing_pose", PoseStamped, queue_size=1)
+    
+    def setupNet(self):
         params_path = rospy.get_param("pkg_path") + "/resources/"
         self.net = cv2.dnn.readNet(params_path + "yolov3.weights", params_path + "yolov3.cfg")
+        rospy.logout("GPU acceleration set to: {}".format(rospy.get_param("gpu")))
+        if (rospy.get_param("gpu")):
+            rospy.logout("Configuring GPU execution")
+            self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+            self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
         #To load all objects that have to be detected
         self.classes = []
         with open(params_path + "coco.names","r") as f:
@@ -31,12 +40,9 @@ class MainNode():
         self.output_layers = []
         for i in self.net.getUnconnectedOutLayers():
             self.output_layers.append(layer_names[i[0]-1])
-        rospy.logout("object detector initialized")
-
         self.inferencing = False
-        rospy.Subscriber("/camera/rgb/image_raw", Image, self.imageCallback, queue_size=1)
-        self.pose_pub = rospy.Publisher("/landing_pose", PoseStamped, queue_size=1)
-    
+        rospy.logout("Object detector initialized")
+
     def imageCallback(self, data):
         if (self.inferencing):
             return
