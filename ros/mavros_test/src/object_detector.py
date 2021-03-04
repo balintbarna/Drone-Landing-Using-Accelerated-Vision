@@ -8,7 +8,7 @@ from time import perf_counter
 # import ROS and CV libraries
 import rospy
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import TwistStamped, PoseStamped, PoseWithCovarianceStamped, Vector3, Vector3Stamped, Point, Quaternion, Pose
+from geometry_msgs.msg import Point
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 
@@ -18,13 +18,14 @@ class MainNode():
         rospy.init_node('object_detector', anonymous=True)
         self.setupNet()
         rospy.Subscriber("/camera/rgb/image_raw", Image, self.imageCallback, queue_size=1)
-        self.pose_pub = rospy.Publisher("/landing_pose", PoseStamped, queue_size=1)
+        self.pose_pub = rospy.Publisher("/landing_pose", Point, queue_size=1)
     
     def setupNet(self):
         params_path = rospy.get_param("pkg_path") + "/resources/"
         self.net = cv2.dnn.readNet(params_path + "yolov3.weights", params_path + "yolov3.cfg")
-        rospy.logout("GPU acceleration set to: {}".format(rospy.get_param("gpu")))
-        if (rospy.get_param("gpu")):
+        enable_gpu = rospy.get_param("gpu", False)
+        rospy.logout("GPU acceleration set to: {}".format(enable_gpu))
+        if (enable_gpu):
             rospy.logout("Configuring GPU execution")
             self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
             self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
@@ -41,7 +42,8 @@ class MainNode():
             self.output_layers.append(layer_names[i[0]-1])
         self.inferencing = False
         self.filtered_fps = 0
-        self.fps_filter_ratio = rospy.get_param("fps_filter_ratio")
+        self.fps_filter_ratio = rospy.get_param("fps_filter_ratio", 0.9)
+        self.target_label = rospy.get_param("target_label", "stop sign")
         rospy.logout("Object detector initialized")
 
     def imageCallback(self, data):
@@ -50,7 +52,8 @@ class MainNode():
         self.inferencing = True
         img = self.getCvImage(data)
         relative_pose = self.find_object(img)
-        self.pose_pub.publish(relative_pose)
+        if (relative_pose != None):
+            self.pose_pub.publish(relative_pose)
         self.inferencing = False
     
     def getCvImage(self, rosImage):
@@ -88,14 +91,16 @@ class MainNode():
                     boxes.append([x,y,w,h])
                     confidences.append(float(confidence))
                     class_ids.append(class_id)
-                    cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
         
         #Removing Double Boxes
-        indices_list = cv2.dnn.NMSBoxes(boxes,confidences,0.3,0.4)
+        indices_list = cv2.dnn.NMSBoxes(boxes, confidences, 0.3, 0.4)
         indices = np.array(indices_list).flatten()
+        target_box = None
         for i in indices:
             x, y, w, h = boxes[i]
             label = self.classes[class_ids[i]]  # name of the objects
+            if (label == self.target_label):
+                target_box = boxes[i]
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.putText(img, label, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
            
@@ -105,11 +110,23 @@ class MainNode():
         cv2.imshow("Output",img)
         cv2.waitKey(1)
 
-        return self.generate_pose()
+        return self.generate_pose(target_box, img.shape)
     
-    def generate_pose(self):
-        pose = PoseStamped()
-        return pose
+    def generate_pose(self, box, img_shape):
+        if (box == None):
+            return None
+        height, width, channels = img_shape
+        x, y, w, h = box
+        x /= width
+        y /= height
+        w /= width
+        h /= height
+        size = w*h
+        p = Point()
+        p.x = x - 0.5
+        p.y = y - 0.5
+        p.z = 1 - size
+        return p
 
 def main():
     node = MainNode()
