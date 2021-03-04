@@ -17,13 +17,15 @@ class MainNode():
     def __init__(self):
         self.bridge = CvBridge()
         rospy.init_node('object_detector', anonymous=True)
-        self.setupNet()
-        rospy.Subscriber("/camera/rgb/image_raw", Image, self.imageCallback, queue_size=1)
+        self.setup_net()
+        self.image = Image()
+        self.image = None
+        rospy.Subscriber("/camera/rgb/image_raw", Image, self.image_callback, queue_size=1)
         self.pose_pub = rospy.Publisher("/landing_pos_error/raw", Point, queue_size=1)
         self.fps_pub_filtered = rospy.Publisher("/inferencing_fps/filtered", String, queue_size=1)
         self.fps_pub = rospy.Publisher("/inferencing_fps/raw", String, queue_size=1)
     
-    def setupNet(self):
+    def setup_net(self):
         params_path = rospy.get_param("pkg_path") + "/resources/"
         self.net = cv2.dnn.readNet(params_path + "yolov3.weights", params_path + "yolov3.cfg")
         enable_gpu = rospy.get_param("gpu", False)
@@ -49,25 +51,28 @@ class MainNode():
         self.target_label = rospy.get_param("target_label", "stop sign")
         rospy.logout("Object detector initialized")
 
-    def imageCallback(self, data):
+    def image_callback(self, data):
+        self.image = data
+        self.process_image()
+    
+    def process_image(self):
         if (self.inferencing):
             return
-        self.inferencing = True
-        img = self.getCvImage(data)
-        relative_pose = self.find_object(img)
-        if (relative_pose != None):
-            self.pose_pub.publish(relative_pose)
-        self.inferencing = False
-    
-    def getCvImage(self, rosImage):
         try:
-            img = self.bridge.imgmsg_to_cv2(rosImage, "bgr8")
-            return img
+            self.inferencing = True
+            img = self.bridge.imgmsg_to_cv2(self.image, "bgr8")
+            relative_pose = self.find_object(img)
+            self.pose_pub.publish(relative_pose)
+        except Exception as e:
+            print(e)
         except CvBridgeError as e:
             print(e)
-        return None
+        finally:
+            self.inferencing = False
     
     def find_object(self, img):
+        if (img is None):
+            raise Exception("img is None")
         start = perf_counter()
         height, width, channels = img.shape
         # rospy.logout("height: {}\nwidth: {}\nchannels: {}\n".format(height, width, channels))
@@ -118,8 +123,8 @@ class MainNode():
         return self.generate_pose(target_box, img.shape)
     
     def generate_pose(self, box, img_shape):
-        if (box == None):
-            return None
+        if (box is None):
+            raise Exception("box is None")
         height, width, channels = img_shape
         x, y, w, h = box
         x /= width
