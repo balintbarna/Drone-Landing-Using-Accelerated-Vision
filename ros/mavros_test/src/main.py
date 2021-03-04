@@ -1,24 +1,9 @@
 #!/usr/bin/env python
 
-# import base libs
-import numpy as np
-import sys
-import signal
-import math
-
 # import ROS libraries
 import rospy
-import mavros
-from mavros.utils import *
-from mavros import setpoint as SP
-import mavros.setpoint
-import mavros.command
-import mavros_msgs.msg
-import mavros_msgs.srv
-from std_msgs.msg import String
-from geometry_msgs.msg import TwistStamped, PoseStamped, PoseWithCovarianceStamped, Vector3, Vector3Stamped, Point, Quaternion, Pose
 
-# import files in package
+# import local package
 from mavros_driver.mav import Mav
 from state_machine import StateMachine
 
