@@ -7,6 +7,7 @@ from time import perf_counter
 
 # import ROS and CV libraries
 import rospy
+from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Point
 from cv_bridge import CvBridge, CvBridgeError
@@ -19,6 +20,8 @@ class MainNode():
         self.setupNet()
         rospy.Subscriber("/camera/rgb/image_raw", Image, self.imageCallback, queue_size=1)
         self.pose_pub = rospy.Publisher("/landing_pose", Point, queue_size=1)
+        self.fps_pub_filtered = rospy.Publisher("/inferencing_fps/filtered", String, queue_size=1)
+        self.fps_pub = rospy.Publisher("/inferencing_fps/raw", String, queue_size=1)
     
     def setupNet(self):
         params_path = rospy.get_param("pkg_path") + "/resources/"
@@ -105,8 +108,10 @@ class MainNode():
             cv2.putText(img, label, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
            
         end = perf_counter()
-        self.filtered_fps = self.filtered_fps * self.fps_filter_ratio + (1/(end-start)) * (1-self.fps_filter_ratio)
-        print("Filtered FPS: {}/s".format(self.filtered_fps)) 
+        fps = (1/(end-start))
+        self.filtered_fps = self.filtered_fps * self.fps_filter_ratio + fps * (1-self.fps_filter_ratio)
+        self.fps_pub.publish(String("{}/s".format(fps)))
+        self.fps_pub_filtered.publish(String("{}/s".format(self.filtered_fps)))
         cv2.imshow("Output",img)
         cv2.waitKey(1)
 
