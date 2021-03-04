@@ -20,6 +20,11 @@
       <uri>model://baylands</uri>
     </include>
 
+    <include>
+      <uri>model://stop_sign</uri>
+      <pose>-5 0 0.5 -1.5708 0 0</pose>
+    </include>
+
     <spherical_coordinates>
       <surface_model>EARTH_WGS84</surface_model>
       <latitude_deg>37.413534</latitude_deg>
