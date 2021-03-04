@@ -1,1 +1,2 @@
 gpu: true
+fps_filter_ratio: 0.9

@@ -3,12 +3,10 @@
 
 # import base libs
 import numpy as np
-import sys
-import signal
+from time import perf_counter
 
-# import ROS libraries
+# import ROS and CV libraries
 import rospy
-from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import TwistStamped, PoseStamped, PoseWithCovarianceStamped, Vector3, Vector3Stamped, Point, Quaternion, Pose
 from cv_bridge import CvBridge, CvBridgeError
@@ -42,6 +40,8 @@ class MainNode():
         for i in self.net.getUnconnectedOutLayers():
             self.output_layers.append(layer_names[i[0]-1])
         self.inferencing = False
+        self.filtered_fps = 0
+        self.fps_filter_ratio = rospy.get_param("fps_filter_ratio")
         rospy.logout("Object detector initialized")
 
     def imageCallback(self, data):
@@ -62,6 +62,7 @@ class MainNode():
         return None
     
     def find_object(self, img):
+        start = perf_counter()
         height, width, channels = img.shape
         # rospy.logout("height: {}\nwidth: {}\nchannels: {}\n".format(height, width, channels))
         blob = cv2.dnn.blobFromImage(img, 0.00392, (416,416), (0,0,0), True, crop=False)
@@ -90,14 +91,17 @@ class MainNode():
                     cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
         
         #Removing Double Boxes
-        indexes=cv2.dnn.NMSBoxes(boxes,confidences,0.3,0.4)
-        for i in range(len(boxes)):
-            if i in indexes:
-                x, y, w, h = boxes[i]
-                label = self.classes[class_ids[i]]  # name of the objects
-                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                cv2.putText(img, label, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
-            
+        indices_list = cv2.dnn.NMSBoxes(boxes,confidences,0.3,0.4)
+        indices = np.array(indices_list).flatten()
+        for i in indices:
+            x, y, w, h = boxes[i]
+            label = self.classes[class_ids[i]]  # name of the objects
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            cv2.putText(img, label, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 2)
+           
+        end = perf_counter()
+        self.filtered_fps = self.filtered_fps * self.fps_filter_ratio + (1/(end-start)) * (1-self.fps_filter_ratio)
+        print("Filtered FPS: {}/s".format(self.filtered_fps)) 
         cv2.imshow("Output",img)
         cv2.waitKey(1)
 
