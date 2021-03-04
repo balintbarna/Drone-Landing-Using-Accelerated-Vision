@@ -6,4 +6,5 @@
     <!-- Control -->
     <node name="main" pkg="mavros_test" type="main.py" output="screen" />
     <node name="object_detector" pkg="mavros_test" type="object_detector.py" output="screen" />
+    <node name="landing_pose_transformer" pkg="mavros_test" type="landing_pose_transformer.py" output="screen" />
 </launch>
