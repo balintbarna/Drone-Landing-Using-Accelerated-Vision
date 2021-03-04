@@ -1,3 +1,5 @@
+import math
+
 import rospy
 from geometry_msgs.msg import Point
 
@@ -11,6 +13,9 @@ class StateMachine():
         self.mav = Mav()
         self.landing_pose = Point()
         self.landing_pose = None
+        self.filtered_distance = math.inf
+        self.dist_filter_ratio = rospy.get_param("dist_filter_ratio", 0.9)
+        self.xy_max_err = rospy.get_param("xy_max_err", 0.2)
         rospy.Subscriber("/landing_pos_error/transformed", Point, self.landing_pose_callback)
     
     def landing_pose_callback(self, p = Point()):
@@ -36,7 +41,10 @@ class StateMachine():
     def startup(self):
         if (self.mav.is_ready()):
             new_target = create_setpoint_message_pose(self.mav.current_pose.pose)
-            new_target.pose.position.z = 10
+            p = new_target.pose.position
+            p.x = 0
+            p.y = 0
+            p.z = 10
             self.mav.set_target_pose(new_target)
             self.mav.start()
             self.set_state(self.takeoff)
@@ -59,5 +67,18 @@ class StateMachine():
         cpos.x -= err.x
         cpos.y -= err.y
         self.mav.set_target_pose(new_target)
-        if (abs(cpos.x) < 0.01):
+        err.z = 0
+        if (self.get_filtered_distance(err) < self.xy_max_err):
             self.set_state(self.loiter)
+        
+    def get_filtered_distance(self, p = Point):
+        d = get_point_magnitude(p)
+        if (self.filtered_distance == math.inf):
+            self.filtered_distance = d
+        else:
+            self.filtered_distance = self.filtered_distance * self.dist_filter_ratio + d * (1-self.dist_filter_ratio)
+        rospy.logout("filt dist: {}".format(self.filtered_distance))
+        return self.filtered_distance
+
+def get_point_magnitude(p = Point()):
+    return math.sqrt(p.x*p.x+p.y*p.y+p.z*p.z)

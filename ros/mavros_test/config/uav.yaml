@@ -1,4 +1,6 @@
 gpu: true
 fps_filter_ratio: 0.9
 target_label: "stop sign"
-pid_param_base: 0.5
+pid_param_base: 0.2
+dist_filter_ratio: 0.9
+xy_max_err: 0.2
