@@ -132,5 +132,8 @@ class Mav():
     def start(self):
         self.timer = rospy.Timer(rospy.Duration(1/20), self._timer_callback)
 
+    def stop(self):
+        self.timer.shutdown()
+
     def is_ready(self):
         return self.state.connected

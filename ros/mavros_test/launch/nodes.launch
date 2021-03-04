@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <rosparam file="$(find mavros_test)/config/uav.yaml" />
+    <rosparam file="$(find mavros_test)/config/sim.yaml" />
     <param name="pkg_path" value="$(find mavros_test)/" />
 
     <!-- Control -->

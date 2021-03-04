@@ -15,6 +15,7 @@ class PointPid():
         self.x = PID(Kp = px, Kd = px/10)
         self.y = PID(Kp = py, Kd = py/10)
         self.z = PID(Kp = pz, Kd = pz/10, setpoint = spz)
+        self.z = PID(Kp = pz, setpoint = spz)
 
 class Transformer():
     def __init__(self):
@@ -24,20 +25,19 @@ class Transformer():
         self.err_pub = rospy.Publisher("/landing_pos_error/transformed", Point, queue_size=1)
     
     def landing_pose_callback(self, p = Point()):
-        tfd = self.cam_frame_to_local(p)
-        nu = Point()
-        nu.x = self.pos_pid.x(tfd.x)
-        nu.y = self.pos_pid.y(tfd.y)
-        nu.z = self.pos_pid.z(tfd.z)
-        self.err_pub.publish(nu)
-        self.landing_pose = nu
+        p.x = self.pos_pid.x(p.x)
+        p.y = self.pos_pid.y(p.y)
+        p.z = self.pos_pid.z(p.z)
+        self.cam_frame_to_local(p)
+        self.err_pub.publish(p)
     
-    def cam_frame_to_local(self, pos_in_cam = Point()):
-        nu = Point()
-        nu.x = -pos_in_cam.y
-        nu.y = -pos_in_cam.x
-        nu.z = -pos_in_cam.z
-        return nu
+    def cam_frame_to_local(self, p = Point()):
+        x = -p.y
+        y = -p.x
+        z = -p.z
+        p.x = x
+        p.y = y
+        p.z = z
 
 def main():
     node = Transformer()

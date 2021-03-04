@@ -3,6 +3,7 @@
 
 # import base libs
 import numpy as np
+import math
 from threading import Condition, Thread
 from time import perf_counter
 
@@ -150,7 +151,7 @@ class MainNode(Thread):
         p = Point()
         p.x = x*2 + w - 1
         p.y = y*2 + h - 1
-        p.z = 1 - size
+        p.z = 1 - math.pow(size, 1/4)
         return p
 
 def main():
