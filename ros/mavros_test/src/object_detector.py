@@ -3,6 +3,7 @@
 
 # import base libs
 import numpy as np
+from threading import Condition, Thread
 from time import perf_counter
 
 # import ROS and CV libraries
@@ -13,17 +14,20 @@ from geometry_msgs.msg import Point
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 
-class MainNode():
+class MainNode(Thread):
     def __init__(self):
+        Thread.__init__(self)
         self.bridge = CvBridge()
         rospy.init_node('object_detector', anonymous=True)
         self.setup_net()
         self.image = Image()
         self.image = None
+        self.process_cond = Condition()
         rospy.Subscriber("/camera/rgb/image_raw", Image, self.image_callback, queue_size=1)
         self.pose_pub = rospy.Publisher("/landing_pos_error/raw", Point, queue_size=1)
         self.fps_pub_filtered = rospy.Publisher("/inferencing_fps/filtered", String, queue_size=1)
         self.fps_pub = rospy.Publisher("/inferencing_fps/raw", String, queue_size=1)
+        self.start()
     
     def setup_net(self):
         params_path = rospy.get_param("pkg_path") + "/resources/"
@@ -53,18 +57,29 @@ class MainNode():
 
     def image_callback(self, data):
         self.image = data
-        self.process_image()
+        with self.process_cond:
+            self.process_cond.notify_all()
+    
+    def run(self):
+        while not rospy.is_shutdown():
+            self.process_image()
+            with self.process_cond:
+                self.process_cond.wait()
     
     def process_image(self):
         if (self.inferencing):
             return
         try:
             self.inferencing = True
-            img = self.bridge.imgmsg_to_cv2(self.image, "bgr8")
+            if (self.image is None):
+                raise Exception("ROS Image is None")
+            ros_img = self.image
+            self.image = None
+            img = self.bridge.imgmsg_to_cv2(ros_img, "bgr8")
             relative_pose = self.find_object(img)
             self.pose_pub.publish(relative_pose)
         except Exception as e:
-            print(e)
+            pass
         except CvBridgeError as e:
             print(e)
         finally:
@@ -144,6 +159,11 @@ def main():
         rospy.spin()
     except KeyboardInterrupt:
         pass
+    finally:
+        cond = node.process_cond
+        with cond:
+            cond.notify_all()
+        node.join()
 
 if __name__ == '__main__':
     main()
