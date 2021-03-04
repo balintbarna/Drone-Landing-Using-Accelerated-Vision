@@ -19,7 +19,7 @@ class MainNode():
         rospy.init_node('object_detector', anonymous=True)
         self.setupNet()
         rospy.Subscriber("/camera/rgb/image_raw", Image, self.imageCallback, queue_size=1)
-        self.pose_pub = rospy.Publisher("/landing_pose", Point, queue_size=1)
+        self.pose_pub = rospy.Publisher("/landing_pos_error/raw", Point, queue_size=1)
         self.fps_pub_filtered = rospy.Publisher("/inferencing_fps/filtered", String, queue_size=1)
         self.fps_pub = rospy.Publisher("/inferencing_fps/raw", String, queue_size=1)
     
