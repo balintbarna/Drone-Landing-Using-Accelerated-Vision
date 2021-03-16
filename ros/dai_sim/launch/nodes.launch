@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <rosparam file="$(find dai_sim)/config/sim.yaml" />
+    <param name="pkg_path" value="$(find dai_sim)/" />
+
+    <!-- Control -->
+    <node name="main" pkg="dai_core" type="main.py" output="screen" />
+    <node name="object_detector" pkg="dai_sim" type="object_detector.py" output="screen" />
+    <node name="landing_pose_transformer" pkg="dai_core" type="landing_pose_transformer.py" output="screen" />
+</launch>

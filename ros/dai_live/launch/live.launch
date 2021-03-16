@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find mavros)/launch/px4.launch" />
+
+    <rosparam file="$(find dai_sim)/config/sim.yaml" />
+
+    <!-- Control -->
+    <node name="main" pkg="dai_core" type="main.py" output="screen" />
+    <node name="landing_pose_transformer" pkg="dai_core" type="landing_pose_transformer.py" output="screen" />
+</launch>

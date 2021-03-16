@@ -12,7 +12,7 @@ function simsrc {
   source $PX4FW/Tools/setup_gazebo.bash $PX4FW $PX4FW/build/px4_sitl_default
   export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$PX4FW
   export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$PX4FW/Tools/sitl_gazebo
-  export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$REPO_PATH/ros/mavros_test/models
+  export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$REPO_PATH/ros/dai_sim/models
   echo "simsrc done"
 }
 export -f simsrc

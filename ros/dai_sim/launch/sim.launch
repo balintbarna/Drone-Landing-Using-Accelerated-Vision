@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find dai_sim)/launch/env.launch" />
+
+    <include file="$(find dai_sim)/launch/nodes.launch" />
+</launch>
