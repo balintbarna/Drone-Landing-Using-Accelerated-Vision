@@ -7,6 +7,7 @@
 1. Make sure that `python` references `python3`. Use `update-alternatives --config python` to select the correct version. If v3 cannot be selected, use `update-alternatives --install /usr/bin/python python /usr/bin/python3 1` to add it.
 1. Install `opencv-python` and `simple-pid` with pip.
 1. Create a Catkin workspace (`~/catkin_ws/src`) and clone this repository there.
+1. Download the YOLOv3 resources with the help of the [README](../../ros/dai_sim/resources/README.md) in the resources folder of the sim package.
 1. Make sure that in `sim.bash` the `ROSWS` and `PX4FW` variables are pointing to the right path
 1. Source `sim.bash` on every terminal session used for the simulation
 1. `sim.bash` registers a command to source relevant paths, like the path to the ROS Noetic distribution, the setup script of the catkin workspace, and the PX4 Autopilot related setup scripts. It also registers a command to build the catkin workspace, re-source it afterwards. To run the simulation the sourcing command needs to run first in each related terminal session.
