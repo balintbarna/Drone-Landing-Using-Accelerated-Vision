@@ -28,6 +28,7 @@ class MainNode(Thread):
         self.pose_pub = rospy.Publisher("/landing_pos_error/raw", Point, queue_size=1)
         self.fps_pub_filtered = rospy.Publisher("/inferencing_fps/filtered", String, queue_size=1)
         self.fps_pub = rospy.Publisher("/inferencing_fps/raw", String, queue_size=1)
+        self.marked_img_pub = rospy.Publisher("/marked_img", Image, queue_size=1)
         self.start()
     
     def setup_net(self):
@@ -133,8 +134,7 @@ class MainNode(Thread):
         self.filtered_fps = self.filtered_fps * self.fps_filter_ratio + fps * (1-self.fps_filter_ratio)
         self.fps_pub.publish(String("{}/s".format(fps)))
         self.fps_pub_filtered.publish(String("{}/s".format(self.filtered_fps)))
-        cv2.imshow("Output",img)
-        cv2.waitKey(1)
+        self.marked_img_pub.publish(self.bridge.cv2_to_imgmsg(img, "bgr8"))
 
         return self.generate_pose(target_box, img.shape)
     
