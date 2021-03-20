@@ -15,7 +15,7 @@ from geometry_msgs.msg import Point
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 
-class MainNode(Thread):
+class ObjectDetector(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.bridge = CvBridge()
@@ -23,7 +23,7 @@ class MainNode(Thread):
         self.setup_net()
         self.image = Image()
         self.image = None
-        self.process_cond = Condition()
+        self.new_img_recv = Condition()
         rospy.Subscriber("/camera/rgb/image_raw", Image, self.image_callback, queue_size=1)
         self.pose_pub = rospy.Publisher("/landing_pos_error/raw", Point, queue_size=1)
         self.fps_pub_filtered = rospy.Publisher("/inferencing_fps/filtered", String, queue_size=1)
@@ -59,14 +59,14 @@ class MainNode(Thread):
 
     def image_callback(self, data):
         self.image = data
-        with self.process_cond:
-            self.process_cond.notify_all()
+        with self.new_img_recv:
+            self.new_img_recv.notify_all()
     
     def run(self):
         while not rospy.is_shutdown():
             self.process_image()
-            with self.process_cond:
-                self.process_cond.wait()
+            with self.new_img_recv:
+                self.new_img_recv.wait()
     
     def process_image(self):
         if (self.inferencing):
@@ -93,7 +93,7 @@ class MainNode(Thread):
         start = perf_counter()
         height, width, channels = img.shape
         # rospy.logout("height: {}\nwidth: {}\nchannels: {}\n".format(height, width, channels))
-        blob = cv2.dnn.blobFromImage(img, 0.00392, (416,416), (0,0,0), True, crop=False)
+        blob = cv2.dnn.blobFromImage(img, 1.0 / 256, (416,416), (0,0,0), True, crop=False)
         self.net.setInput(blob)
         outs=self.net.forward(self.output_layers)
         class_ids=[]
@@ -155,13 +155,13 @@ class MainNode(Thread):
         return p
 
 def main():
-    node = MainNode()
+    node = ObjectDetector()
     try:
         rospy.spin()
     except KeyboardInterrupt:
         pass
     finally:
-        cond = node.process_cond
+        cond = node.new_img_recv
         with cond:
             cond.notify_all()
         node.join()
