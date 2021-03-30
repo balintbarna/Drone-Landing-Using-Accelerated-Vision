@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <rosparam file="$(find dai_live)/config/live.yaml" />
+
+    <node name="cam_driver" pkg="dai_live" type="cam_driver.py" output="screen" />
+
+    <include file="$(find dai_core)/launch/core.launch" />
+</launch>
