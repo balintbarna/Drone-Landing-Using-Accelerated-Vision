@@ -1,7 +1,8 @@
 '''
 NOTICE
 This work is a derivative of https://github.com/Xilinx/Vitis-AI/blob/v1.1/mpsoc/vitis_ai_dnndk_samples/tf_yolov3_voc_py/tf_yolov3_voc.py
-The license of the original work is included below
+and https://github.com/Xilinx/DPU-PYNQ/blob/v1.2.0/pynq_dpu/edge/notebooks/dpu_yolo_v3.ipynb
+The license of the original work(s) is included below
 '''
 
 '''
