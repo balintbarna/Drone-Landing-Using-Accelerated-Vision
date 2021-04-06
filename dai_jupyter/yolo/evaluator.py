@@ -92,8 +92,8 @@ class Evaluator:
         return new_image
 
     def draw_boxes(self, image, boxes, scores, classes):
-        for i, bbox in enumerate(boxes):
-            [top, left, bottom, right] = bbox
+        for i, box in enumerate(boxes):
+            [top, left, bottom, right] = box
             width, height = right - left, bottom - top
             center_x, center_y = left + width*0.5, top + height*0.5
             score, class_index = scores[i], classes[i]
@@ -174,7 +174,7 @@ class Evaluator:
         offset = (input_shape - new_shape) / 2. / input_shape
         scale = input_shape / new_shape
         box_yx = (box_yx - offset) * scale
-        box_hw *= scale
+        box_hw *= scale * 10
 
         box_mins = box_yx - (box_hw / 2.)
         box_maxes = box_yx + (box_hw / 2.)
