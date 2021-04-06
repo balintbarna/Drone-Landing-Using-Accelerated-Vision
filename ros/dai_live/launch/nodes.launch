@@ -2,7 +2,7 @@
 <launch>
     <rosparam file="$(find dai_live)/config/live.yaml" />
 
-    <node name="cam_driver" pkg="dai_live" type="cam_driver.py" output="screen" />
+    <node name="pos_publisher" pkg="dai_live" type="pos_publisher.py" output="screen" />
 
     <include file="$(find dai_core)/launch/core.launch" />
 </launch>

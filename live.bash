@@ -2,6 +2,15 @@
 
 echo "Setting up functions for live deployment"
 
+function livesrc {
+  ROSWS=~/catkin_ws
+  source /opt/ros/melodic/setup.bash
+  source $ROSWS/devel/setup.bash
+  echo livesrc
+}
+export -f livesrc
+echo "new command: livesrc"
+
 function bindnb {
   ROSWS=~/catkin_ws
   REPO_NAME=Drone-Landing-Using-Accelerated-Vision
