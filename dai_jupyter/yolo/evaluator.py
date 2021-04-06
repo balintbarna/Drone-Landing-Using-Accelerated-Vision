@@ -65,7 +65,7 @@ class Evaluator:
         else:
             new_image_size = (image_w - (image_w % 32), image_h - (image_h % 32))
             boxed_image = self.letterbox_image(image, new_image_size)
-        image_data = np.array(boxed_image, dtype='float32')
+        image_data = boxed_image
         image_data /= 255.
         image_data = np.expand_dims(image_data, 0)
         return image_data
@@ -80,7 +80,7 @@ class Evaluator:
         nh = int(ih*scale)
 
         image = cv2.resize(image, (nw,nh), interpolation=cv2.INTER_LINEAR)
-        new_image = np.ones((h,w,3), np.uint8) * 128
+        new_image = np.ones((h,w,3), dtype='float32') * 128
         h_start = (h-nh)//2
         w_start = (w-nw)//2
         new_image[h_start:h_start+nh, w_start:w_start+nw, :] = image
