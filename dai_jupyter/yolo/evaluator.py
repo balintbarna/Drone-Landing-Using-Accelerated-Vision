@@ -70,23 +70,25 @@ class Evaluator:
         image_data = np.expand_dims(image_data, 0)
         return image_data
 
-    def letterbox_image(self, image, size):
+    def letterbox_image(self, image, size, show = False):
         '''resize image with unchanged aspect ratio using padding'''
         ih, iw, _ = image.shape
         w, h = size
         scale = min(w/iw, h/ih)
-        print(scale)
         
         nw = int(iw*scale)
         nh = int(ih*scale)
-        print(nw)
-        print(nh)
 
         image = cv2.resize(image, (nw,nh), interpolation=cv2.INTER_LINEAR)
         new_image = np.ones((h,w,3), np.uint8) * 128
         h_start = (h-nh)//2
         w_start = (w-nw)//2
         new_image[h_start:h_start+nh, w_start:w_start+nw, :] = image
+
+        if show:
+            px = 1/plt.rcParams['figure.dpi']  # pixel in inches
+            _, ax = plt.subplots(1, figsize=(new_image.shape[0]*px*2,new_image.shape[1]*px*2))
+            _ = ax.imshow(new_image)
         return new_image
 
     def draw_boxes(self, image, boxes, scores, classes):
