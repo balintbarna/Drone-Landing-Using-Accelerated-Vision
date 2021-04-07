@@ -8,7 +8,6 @@ import math
 import rospy
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Point
-from tornado import gen, ioloop
 import zmq
 
 class ZmqTest(Thread):
