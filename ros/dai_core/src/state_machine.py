@@ -6,6 +6,9 @@ from geometry_msgs.msg import Point
 from mavros_driver.mav import Mav
 from mavros_driver.message_tools import create_setpoint_message_pose
 
+def inf():
+    return float('inf')
+
 class StateMachine():
     def __init__(self):
         self.state = None
@@ -13,7 +16,7 @@ class StateMachine():
         self.mav = Mav()
         self.landing_pose = Point()
         self.landing_pose = None
-        self.filtered_distance = math.inf
+        self.filtered_distance = inf()
         self.dist_filter_ratio = rospy.get_param("dist_filter_ratio", 0.9)
         self.xy_max_err = rospy.get_param("xy_max_err", 0.2)
         self.xyz_max_err_before_landing = rospy.get_param("xyz_max_err_before_landing", 0.1)
@@ -67,7 +70,7 @@ class StateMachine():
         self.landing_pose = None
         err.z = 0
         if (self.get_filtered_distance(err) < self.xy_max_err):
-            self.filtered_distance = math.inf
+            self.filtered_distance = inf()
             self.set_state(self.state_inch_lower_above_target)
             return
         self.set_mav_pos_from_err(err)
@@ -83,14 +86,14 @@ class StateMachine():
         z = err.z
         err.z = 0
         if (get_point_magnitude(err) > self.xy_max_err):
-            self.filtered_distance = math.inf
+            self.filtered_distance = inf()
             self.set_state(self.state_inch_above_target)
             return
         err.z = z
         self.set_mav_pos_from_err(err)
 
     def land(self):
-        self.filtered_distance = math.inf
+        self.filtered_distance = inf()
         self.mav.stop()
         self.set_state(self.state_landing)
     
@@ -108,7 +111,7 @@ class StateMachine():
 
     def get_filtered_distance(self, p = Point):
         d = get_point_magnitude(p)
-        if (self.filtered_distance == math.inf):
+        if (self.filtered_distance == inf()):
             self.filtered_distance = d
         else:
             self.filtered_distance = self.filtered_distance * self.dist_filter_ratio + d * (1-self.dist_filter_ratio)

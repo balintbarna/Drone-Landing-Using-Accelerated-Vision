@@ -14,7 +14,7 @@ class MainNode():
         self.sm = StateMachine()
         self.sm.mav = self.mav
 
-        self.stateMachineTimer = rospy.Timer(rospy.Duration(1/50), self.run_state)
+        self.stateMachineTimer = rospy.Timer(rospy.Duration(1/50.), self.run_state)
     
     def run_state(self, timerEvent):
         self.sm.loop()

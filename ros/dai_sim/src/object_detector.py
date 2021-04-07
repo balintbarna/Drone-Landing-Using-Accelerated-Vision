@@ -93,7 +93,7 @@ class ObjectDetector(Thread):
         start = perf_counter()
         height, width, channels = img.shape
         # rospy.logout("height: {}\nwidth: {}\nchannels: {}\n".format(height, width, channels))
-        blob = cv2.dnn.blobFromImage(img, 1.0 / 256, (416,416), (0,0,0), True, crop=False)
+        blob = cv2.dnn.blobFromImage(img, 1.0 / 256., (416,416), (0,0,0), True, crop=False)
         self.net.setInput(blob)
         outs=self.net.forward(self.output_layers)
         class_ids=[]
