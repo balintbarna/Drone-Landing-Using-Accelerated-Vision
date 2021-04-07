@@ -1,3 +1,4 @@
+env: "sim"
 gpu: true
 fps_filter_ratio: 0.9
 target_label: "stop sign"

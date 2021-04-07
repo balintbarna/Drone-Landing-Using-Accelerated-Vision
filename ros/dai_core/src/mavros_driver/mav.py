@@ -34,7 +34,8 @@ class Mav():
         self.set_mode = rospy.ServiceProxy(mavros.get_topic('set_mode'), mavros_msgs.srv.SetMode)
     
     def _timer_callback(self, timerEvent):
-        self.arm_and_offboard()
+        if (rospy.get_param("env", "") == "sim"):
+            self.arm_and_offboard()
         self.publish_target_pose()
 
     def _state_callback(self, topic):
