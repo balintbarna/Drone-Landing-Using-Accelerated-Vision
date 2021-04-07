@@ -22,9 +22,9 @@ class ZmqTest(Thread):
         self.sub.setsockopt(zmq.SUBSCRIBE, b"")
         self.sub.setsockopt(zmq.LINGER, 0)
         self.sub.connect("tcp://localhost:5555")
-        self.req = ctx.socket(zmq.REQ)
-        self.req.setsockopt(zmq.LINGER, 0)
-        self.req.connect("tcp://localhost:5556")
+        self.pub = ctx.socket(zmq.PUB)
+        self.pub.setsockopt(zmq.LINGER, 0)
+        self.pub.connect("tcp://localhost:5556")
         self.start()
     
     def run(self):
@@ -55,11 +55,10 @@ class ZmqTest(Thread):
         return value
     
     def close(self):
+        self.pub.send(b"TERMINATE")
         self.join(5)
-        # self.req.send(b"TERMINATE")
-        # self.req.recv()
         self.sub.close()
-        self.req.close()
+        self.pub.close()
 
 def main():
     node = ZmqTest()
