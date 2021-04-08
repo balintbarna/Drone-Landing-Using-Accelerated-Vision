@@ -131,7 +131,7 @@ class Mav():
         self.set_target_pose(pose)
     
     def start(self):
-        self.timer = rospy.Timer(rospy.Duration(1/20), self._timer_callback)
+        self.timer = rospy.Timer(rospy.Duration(1/20.), self._timer_callback)
 
     def stop(self):
         self.timer.shutdown()
