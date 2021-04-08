@@ -7,9 +7,21 @@
 1. Clone repository to `~/catkin_ws/src`
 1. Install DPU PYNQ following the instructions in their [README](https://github.com/Xilinx/DPU-PYNQ)
 1. Install pyzmq and simple-pid with pip2. PyZMQ may need sudo or a lot of patience to install.
-    ```
+    ```bash
     sudo apt-get install -y python-pip python-requests
     pip2 install simple-pid pyzmq
+    ```
+1. For user access to camera and USB
+    ```bash
+    sudo adduser xilinx video
+    sudo adduser xilinx dialout
+    # reboot after
+    ```
+    The usergroup name can be checked with 
+    ```bash
+    # have the camera and PX4 already connected to get reasonable results
+    ls -ltrh /dev/video*
+    ll /dev/ttyACM0
     ```
 1. Source the `live.bash` script
 1. Use the `bindnb` command to add the notebooks to the running Jupyter server
