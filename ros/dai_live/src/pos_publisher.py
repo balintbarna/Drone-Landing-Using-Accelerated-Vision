@@ -4,6 +4,7 @@ from threading import Condition, Thread
 import sys
 import struct
 import math
+import time
 # import ROS and zmq libraries
 import rospy
 from sensor_msgs.msg import Image
@@ -56,6 +57,7 @@ class ZmqTest(Thread):
     def close(self):
         self.pub.send(b"TERMINATE")
         self.join(5)
+        time.sleep(1)
         self.sub.close()
         self.pub.close()
 

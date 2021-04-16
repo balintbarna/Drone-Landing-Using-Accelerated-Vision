@@ -21,7 +21,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import os
+import sys
+from os.path import join, pardir, dirname
 import cv2
 import colorsys
 import random
@@ -31,7 +32,7 @@ from matplotlib.patches import Rectangle
 
 class Evaluator:
     def __init__(self):
-        self.class_names = self.read_class_list("yolo/classes.txt")
+        self.class_names = self.read_class_list(join(dirname(__file__), "classes.txt"))
         # colors
         num_classes = len(self.class_names)
         hsv_tuples = [(1.0 * x / num_classes, 1., 1.) for x in range(num_classes)]
