@@ -1,8 +1,8 @@
 #!/bin/bash
 
-sudo screen -S detect -d -m bash -c 'python3 -m dai_jupyter.nonb.cam_detect_target; exec'
-echo "started detect"
-sleep 5
+# sudo -su root script -c bash "screen -S detect -d -m bash -c 'python3 -m dai_jupyter.nonb.cam_detect_target; exec'"
+# echo "started detect"
+# sleep 5
 screen -S core -d -m bash -c 'source live.bash; livesrc; roscore; exec'
 echo "started core"
 sleep 5
