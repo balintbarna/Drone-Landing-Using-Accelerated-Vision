@@ -32,12 +32,16 @@ class Transformer():
         self.err_pub.publish(p)
     
     def cam_frame_to_local(self, p = Point()):
-        x = -p.y
-        y = -p.x
-        z = -p.z
-        p.x = x
-        p.y = y
-        p.z = z
+        if (rospy.get_param("env", "") == "sim"):
+            x = -p.y
+            y = -p.x
+            z = -p.z
+            p.x = x
+            p.y = y
+            p.z = z
+        else:
+            p.y = -p.y
+            p.z = -p.z
 
 def main():
     node = Transformer()

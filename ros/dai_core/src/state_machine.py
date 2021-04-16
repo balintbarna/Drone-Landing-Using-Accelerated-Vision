@@ -51,7 +51,7 @@ class StateMachine():
         p = new_target.pose.position
         p.x = 0
         p.y = 0
-        p.z = 10
+        p.z = rospy.get_param("starting_altitude", 1)
         self.mav.set_target_pose(new_target)
         self.mav.start()
         self.set_state(self.state_takeoff)
