@@ -10,7 +10,7 @@ from mavros_msgs.msg import State
 import mavros_msgs.srv
 from geometry_msgs.msg import TwistStamped, PoseStamped, Point
 # own libs
-from mavros_driver.message_tools import create_setpoint_message_pos_yaw, orientation_to_yaw, point_to_arr, create_setpoint_message_pos_ori, arr_to_point
+from mavros_driver.message_tools import create_setpoint_message_pos_yaw, orientation_to_yaw, point_to_arr, create_setpoint_message_pos_ori, arr_to_point, create_setpoint_message_pose
 
 class Mav():
     def __init__(self, namespace = "mavros"):
@@ -34,6 +34,9 @@ class Mav():
         self.set_mode = rospy.ServiceProxy(mavros.get_topic('set_mode'), mavros_msgs.srv.SetMode)
     
     def _timer_callback(self, timerEvent):
+        if rospy.is_shutdown():
+            self.stop()
+            return
         if (rospy.get_param("env", "") == "sim"):
             self.arm_and_offboard()
         self.publish_target_pose()
@@ -55,7 +58,7 @@ class Mav():
                 pass
     
     def publish_target_pose(self):
-        # self._setpoint_local_pub.publish(self.target_pose)
+        # self._setpoint_local_pub.publish(create_setpoint_message_pose(self.target_pose.pose))
         self._setpoint_local_pub.publish(self.distance_limited_target())
         pass
     
@@ -67,7 +70,7 @@ class Mav():
         diffsize = np.linalg.norm(diff)
         max_dist = 2
         if diffsize < max_dist:
-            return self.target_pose
+            return create_setpoint_message_pose(self.target_pose.pose)
         ratio = diffsize / max_dist
         true_target = current + diff / ratio
         new_point = arr_to_point(true_target)
@@ -131,7 +134,8 @@ class Mav():
         self.set_target_pose(pose)
     
     def start(self):
-        self.timer = rospy.Timer(rospy.Duration(1/20.), self._timer_callback)
+        rate = rospy.get_param("pose_rate", 5)
+        self.timer = rospy.Timer(rospy.Duration(1 / float(rate)), self._timer_callback)
 
     def stop(self):
         self.timer.shutdown()

@@ -1,7 +1,7 @@
-from geometry_msgs.msg import TwistStamped, PoseStamped, PoseWithCovarianceStamped, Vector3, Vector3Stamped, Point, Quaternion, Pose
+from geometry_msgs.msg import Point, Quaternion, Pose
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 import rospy
-import mavros.setpoint
+from mavros.setpoint import PoseStamped, Header
 import numpy as np
 
 def yaw_to_orientation(yaw):
@@ -27,12 +27,13 @@ def create_setpoint_message_pos_ori(pos = Point(), ori = Quaternion()):
     return create_setpoint_message_pose(pose)
 
 def create_setpoint_message_pose(pose = Pose()):
-    setpoint_msg = mavros.setpoint.PoseStamped(
-        header=mavros.setpoint.Header(
-            frame_id="att_pose",
-            stamp=rospy.Time.now()),
+    setpoint_msg = PoseStamped(
+        header = Header(
+            frame_id = "map",
+            stamp = rospy.Time.now()
+        ),
+        pose = pose
     )
-    setpoint_msg.pose = pose
     return setpoint_msg
 
 def point_to_arr(point = Point()):

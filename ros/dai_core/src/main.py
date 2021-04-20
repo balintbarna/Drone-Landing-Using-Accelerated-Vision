@@ -14,9 +14,13 @@ class MainNode():
         self.sm = StateMachine()
         self.sm.mav = self.mav
 
-        self.stateMachineTimer = rospy.Timer(rospy.Duration(1/50.), self.run_state)
+        stateMachineRate = 50
+        self.stateMachineTimer = rospy.Timer(rospy.Duration(1 / float(stateMachineRate)), self.run_state)
     
     def run_state(self, timerEvent):
+        if rospy.is_shutdown():
+            self.stateMachineTimer.shutdown()
+            return
         self.sm.loop()
 
 def main():
@@ -24,7 +28,7 @@ def main():
     try:
         rospy.spin()
     except KeyboardInterrupt:
-        pass
+        self.stateMachineTimer.shutdown()
 
 if __name__ == '__main__':
     main()
