@@ -1,10 +1,10 @@
 import math
 
 import rospy
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import Point, Pose
 
 from mavros_driver.mav import Mav
-from mavros_driver.message_tools import create_setpoint_message_pose
+from mavros_driver.message_tools import yaw_to_orientation
 
 def inf():
     return float('inf')
@@ -47,9 +47,10 @@ class StateMachine():
             self.takeoff()
 
     def takeoff(self):
-        new_target = create_setpoint_message_pose(self.mav.current_pose.pose)
-        p = new_target.pose.position
-        p.z = p.z + rospy.get_param("starting_altitude", 1)
+        cp = self.mav.current_pose.pose.position
+        p = Point(cp.x, cp.y, cp.z + rospy.get_param("starting_altitude", 1))
+        o = yaw_to_orientation(0)
+        new_target = Pose(p, o)
         self.mav.set_target_pose(new_target)
         self.mav.start()
         self.set_state(self.state_takeoff)
@@ -100,12 +101,10 @@ class StateMachine():
             self.set_state(self.state_loiter)
 
     def set_mav_pos_from_err(self, err):
-        new_target = create_setpoint_message_pose(self.mav.current_pose.pose)
-        cpos = new_target.pose.position
-        cpos.x -= err.x
-        cpos.y -= err.y
-        cpos.z -= err.z
-        self.mav.set_target_pose(new_target)
+        cp = self.mav.current_pose.pose.position
+        pos = Point(cp.x - err.x, cp.y - err.z, cp.z - err.z)
+        ori = yaw_to_orientation(0)
+        self.mav.set_target_pose(Pose(pos, ori))
 
     def get_filtered_distance(self, p = Point):
         d = get_point_magnitude(p)
