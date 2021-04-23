@@ -141,4 +141,10 @@ class Mav():
         self.timer.shutdown()
 
     def is_ready(self):
-        return self.state.connected
+        if not self.state.connected:
+            return False
+        pos = self.current_pose.pose.position
+        ori = self.current_pose.pose.orientation
+        size = abs(pos.x) + abs(pos.y) + abs(pos.z) + abs(ori.x) + abs(ori.y) + abs(ori.z) + abs(ori.w)
+        return size > 0
+        
