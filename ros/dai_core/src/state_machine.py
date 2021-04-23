@@ -45,6 +45,8 @@ class StateMachine():
     def state_startup(self):
         if (self.mav.is_ready()):
             self.takeoff()
+            # self.set_state(self.state_loiter)
+            # self.mav.start()
 
     def takeoff(self):
         cp = self.mav.current_pose.pose.position
@@ -59,8 +61,11 @@ class StateMachine():
         if (self.mav.has_arrived()):
             self.set_state(self.state_inch_above_target)
     
-    def state_loiter(self):
+    def state_passive(self):
         pass
+    
+    def state_loiter(self):
+        self.mav.set_target_pose(self.mav.current_pose.pose)
     
     def state_inch_above_target(self):
         if (self.landing_pose == None):
