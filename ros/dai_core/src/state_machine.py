@@ -20,7 +20,7 @@ class StateMachine():
         self.dist_filter_ratio = rospy.get_param("dist_filter_ratio", 0.9)
         self.xy_max_err = rospy.get_param("xy_max_err", 0.2)
         self.xyz_max_err_before_landing = rospy.get_param("xyz_max_err_before_landing", 0.1)
-        rospy.Subscriber("/landing_pos_error/transformed", Point, self.landing_pose_callback)
+        rospy.Subscriber("/landing_pos_error/local_frame", Point, self.landing_pose_callback)
     
     def landing_pose_callback(self, p = Point()):
         self.landing_pose = p

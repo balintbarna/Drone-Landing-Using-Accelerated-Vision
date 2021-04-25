@@ -4,6 +4,7 @@
     <param name="pkg_path" value="$(find dai_sim)/" />
 
     <node name="object_detector" pkg="dai_sim" type="object_detector.py" output="screen" />
+    <node name="landing_pose_transformer_sim" pkg="dai_sim" type="landing_pose_transformer.py" output="screen" />
 
     <include file="$(find dai_core)/launch/core.launch" />
 </launch>

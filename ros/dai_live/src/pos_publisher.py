@@ -15,7 +15,7 @@ class ZmqTest(Thread):
     def __init__(self):
         Thread.__init__(self)
         rospy.init_node('zmq_test', anonymous=True)
-        self.pose_pub = rospy.Publisher("/landing_pos_error/raw", Point, queue_size=1)
+        self.pose_pub = rospy.Publisher("/landing_pos_error/cam_frame/raw", Point, queue_size=1)
 
         ctx = zmq.Context()
         self.sub = ctx.socket(zmq.SUB)

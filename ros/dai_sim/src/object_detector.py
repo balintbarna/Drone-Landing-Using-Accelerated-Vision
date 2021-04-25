@@ -25,7 +25,7 @@ class ObjectDetector(Thread):
         self.image = None
         self.new_img_recv = Condition()
         rospy.Subscriber("/camera/rgb/image_raw", Image, self.image_callback, queue_size=1)
-        self.pose_pub = rospy.Publisher("/landing_pos_error/raw", Point, queue_size=1)
+        self.pose_pub = rospy.Publisher("/landing_pos_error/cam_frame/raw", Point, queue_size=1)
         self.fps_pub_filtered = rospy.Publisher("/inferencing_fps/filtered", String, queue_size=1)
         self.fps_pub = rospy.Publisher("/inferencing_fps/raw", String, queue_size=1)
         self.marked_img_pub = rospy.Publisher("/marked_img", Image, queue_size=1)

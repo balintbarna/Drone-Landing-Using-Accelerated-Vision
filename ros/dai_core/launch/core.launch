@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-    <node name="main" pkg="dai_core" type="main.py" output="screen" />
+    <node name="pos_error_pid" pkg="dai_core" type="pos_error_pid.py" output="screen" />
     <node name="landing_pose_transformer" pkg="dai_core" type="landing_pose_transformer.py" output="screen" />
+    <node name="main" pkg="dai_core" type="main.py" output="screen" />
 </launch>

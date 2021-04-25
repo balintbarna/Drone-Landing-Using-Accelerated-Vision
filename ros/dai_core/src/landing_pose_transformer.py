@@ -1,47 +1,51 @@
 #!/usr/bin/env python
 
-from simple_pid import PID
-
+from math import cos, sin, pow
 import rospy
-from geometry_msgs.msg import Point
+from std_msgs.msg import String
+from geometry_msgs.msg import Point, Quaternion
+from tf.transformations import euler_from_quaternion
 
-class PointPid():
-    def __init__(self):
-        base = rospy.get_param("pid_param_base", 1.0)
-        spz = rospy.get_param("target_altitude_from_target", 0.15)
-        px = base
-        py = base
-        pz = base
-        self.x = PID(Kp = px, Kd = px/10)
-        self.y = PID(Kp = py, Kd = py/10)
-        self.z = PID(Kp = pz, Kd = pz/10, setpoint = spz)
-        self.z = PID(Kp = pz, setpoint = spz)
+def orientation_to_yaw(orientation = Quaternion()):
+    quat_tf = [orientation.x, orientation.y, orientation.z, orientation.w]
+    yaw = euler_from_quaternion(quat_tf)[2]
+    return yaw
 
 class Transformer():
     def __init__(self):
-        self.pos_pid = PointPid()
+        self.orientation = Quaternion()
+        self.last_pub = None
         rospy.init_node('landing_pose_transformer', anonymous=True)
-        rospy.Subscriber("/landing_pos_error/raw", Point, self.landing_pose_callback, queue_size=1)
-        self.err_pub = rospy.Publisher("/landing_pos_error/transformed", Point, queue_size=1)
+        rospy.Subscriber("/landing_pos_error/drone_frame", Point, self.landing_pose_callback, queue_size=1)
+        rospy.Subscriber("/mavros/local_position/pose/pose/orientation", Quaternion, self.orientation_callback, queue_size=1)
+        self.err_pub = rospy.Publisher("/landing_pos_error/local_frame", Point, queue_size=1)
+        self.rate_pub = rospy.Publisher("/landing_pos_error/update_duration", String, queue_size=1)
+
+    def orientation_callback(self, msg = Quaternion()):
+        self.orientation = msg
     
-    def landing_pose_callback(self, p = Point()):
-        p.x = self.pos_pid.x(p.x)
-        p.y = self.pos_pid.y(p.y)
-        p.z = self.pos_pid.z(p.z)
-        self.cam_frame_to_drone_frame(p)
-        self.err_pub.publish(p)
+    def landing_pose_callback(self, msg = Point()):
+        self.drone_frame_to_local(msg)
+        self.err_pub.publish(msg)
+        now = rospy.Time.now()
+        if self.last_pub is not None:
+            time_elapsed = now - self.last_pub
+            self.rate_pub.publish(String(str(time_elapsed.secs + time_elapsed.nsecs/pow(10, 9))))
+        self.last_pub = now
     
-    def cam_frame_to_drone_frame(self, p = Point()):
-        if (rospy.get_param("env", "") == "sim"):
-            x = -p.y
-            y = -p.x
-            z = -p.z
-            p.x = x
-            p.y = y
-            p.z = z
-        else:
-            p.y = -p.y
-            p.z = -p.z
+    def drone_frame_to_local(self, p = Point()):
+        o = self.orientation
+        o_sum = abs(o.x) + abs(o.y) + abs(o.z) + abs(o.w)
+        if not o_sum > 0:
+            return
+        yaw = orientation_to_yaw(o)
+        c = cos(yaw)
+        s = sin(yaw)
+        x = c*p.x - s*p.y
+        y = s*p.x + c*p.y
+        p.x = x
+        p.y = y
+        pass
 
 def main():
     node = Transformer()
