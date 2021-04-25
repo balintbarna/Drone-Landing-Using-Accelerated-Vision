@@ -59,7 +59,6 @@ class StateMachine():
         o = yaw_to_orientation(0)
         new_target = Pose(p, o)
         self.mav.set_target_pose(new_target)
-        self.mav.start()
         self.set_state(self.state_takeoff)
 
     def state_takeoff(self):
