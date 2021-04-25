@@ -28,7 +28,7 @@ def main():
     try:
         rospy.spin()
     except KeyboardInterrupt:
-        self.stateMachineTimer.shutdown()
+        node.stateMachineTimer.shutdown()
 
 if __name__ == '__main__':
     main()
