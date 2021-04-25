@@ -129,6 +129,9 @@ class Mav():
         pose = Pose(self.target_pose.position, yaw_to_orientation(yaw))
         self.set_target_pose(pose)
     
+    def auto_land(self):
+        self.set_mode(0, State.MODE_PX4_LAND)
+    
     def start(self):
         rate = rospy.get_param("pose_rate", 5)
         self.timer = rospy.Timer(rospy.Duration(1 / float(rate)), self._timer_callback)

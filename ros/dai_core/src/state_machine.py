@@ -112,6 +112,7 @@ class StateMachine():
     def land(self):
         self.filtered_distance = inf()
         self.mav.stop()
+        self.mav.auto_land()
         self.set_state(self.state_landing)
     
     def state_landing(self):
