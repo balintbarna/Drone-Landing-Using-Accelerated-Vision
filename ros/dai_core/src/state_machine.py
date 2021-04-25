@@ -87,7 +87,7 @@ class StateMachine():
             self.filtered_distance = inf()
             self.set_state(self.state_inch_lower_above_target)
             return
-        self.set_mav_pos_from_err(err)
+        self.set_mav_pos_from_err(err, False)
     
     def state_inch_lower_above_target(self):
         if not self.mav.controllable():
