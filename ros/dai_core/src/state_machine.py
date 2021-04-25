@@ -119,9 +119,12 @@ class StateMachine():
         if not self.mav.state.armed:
             self.set_state(self.state_passive)
 
-    def set_mav_pos_from_err(self, err):
+    def set_mav_pos_from_err(self, err, altitude = True):
         cp = self.mav.current_pose.pose.position
-        pos = Point(cp.x - err.x, cp.y - err.z, cp.z - err.z)
+        z = cp.z - err.z
+        if not altitude:
+            z = self.mav.target_pose.position.z
+        pos = Point(cp.x - err.x, cp.y - err.y, z)
         ori = yaw_to_orientation(0)
         self.mav.set_target_pose(Pose(pos, ori))
 
