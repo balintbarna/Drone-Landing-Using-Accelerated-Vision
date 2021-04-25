@@ -28,10 +28,10 @@ class Transformer():
         p.x = self.pos_pid.x(p.x)
         p.y = self.pos_pid.y(p.y)
         p.z = self.pos_pid.z(p.z)
-        self.cam_frame_to_local(p)
+        self.cam_frame_to_drone_frame(p)
         self.err_pub.publish(p)
     
-    def cam_frame_to_local(self, p = Point()):
+    def cam_frame_to_drone_frame(self, p = Point()):
         if (rospy.get_param("env", "") == "sim"):
             x = -p.y
             y = -p.x

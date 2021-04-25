@@ -37,16 +37,21 @@ class StateMachine():
         rospy.logout("New state: {} (was {})".format(self.get_name(new_state), self.get_name(old_state)))
 
     def loop(self):
-        if (callable(self.state)):
+        if callable(self.state):
             self.state()
         else:
             rospy.logerr("State is not callable: {}".format(self.get_name(self.state)))
 
     def state_startup(self):
-        if (self.mav.is_ready()):
+        if self.mav.connected():
+            self.mav.start()
+            self.set_state(self.state_wait_for_control)
+    
+    def state_wait_for_control(self):
+        if self.mav.controllable():
             self.takeoff()
-            # self.set_state(self.state_loiter)
-            # self.mav.start()
+        else:
+            self.mav.set_target_pose(self.mav.current_pose.pose)
 
     def takeoff(self):
         cp = self.mav.current_pose.pose.position
@@ -58,6 +63,9 @@ class StateMachine():
         self.set_state(self.state_takeoff)
 
     def state_takeoff(self):
+        if not self.mav.controllable():
+            self.set_state(self.state_wait_for_control)
+
         if (self.mav.has_arrived()):
             self.set_state(self.state_inch_above_target)
     
@@ -68,6 +76,9 @@ class StateMachine():
         self.mav.set_target_pose(self.mav.current_pose.pose)
     
     def state_inch_above_target(self):
+        if not self.mav.controllable():
+            self.set_state(self.state_wait_for_control)
+
         if (self.landing_pose == None):
             return
         err = self.landing_pose
@@ -80,6 +91,9 @@ class StateMachine():
         self.set_mav_pos_from_err(err)
     
     def state_inch_lower_above_target(self):
+        if not self.mav.controllable():
+            self.set_state(self.state_wait_for_control)
+
         if (self.landing_pose == None):
             return
         err = self.landing_pose
@@ -103,7 +117,7 @@ class StateMachine():
     
     def state_landing(self):
         if not self.mav.state.armed:
-            self.set_state(self.state_loiter)
+            self.set_state(self.state_passive)
 
     def set_mav_pos_from_err(self, err):
         cp = self.mav.current_pose.pose.position

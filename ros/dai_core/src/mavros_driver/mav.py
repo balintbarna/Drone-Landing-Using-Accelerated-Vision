@@ -37,9 +37,8 @@ class Mav():
         if rospy.is_shutdown():
             self.stop()
             return
-        if (rospy.get_param("env", "") == "sim"):
+        if rospy.get_param("auto_arm_offboard", False):
             self.arm_and_offboard()
-        # self.arm_and_offboard()
         self.publish_target_pose()
 
     def _state_callback(self, topic):
@@ -52,11 +51,11 @@ class Mav():
         self.current_velocity = topic
     
     def arm_and_offboard(self):
-        if self.state.mode != "OFFBOARD":
-            self.set_mode(0, 'OFFBOARD')
         if not self.state.armed:
             if self.set_arming(True):
                 pass
+        if not self.state.mode == State.MODE_PX4_OFFBOARD:
+            self.set_mode(0, State.MODE_PX4_OFFBOARD)
     
     def publish_target_pose(self):
         self._setpoint_local_pub.publish(self.distance_limited_target())
@@ -136,8 +135,8 @@ class Mav():
 
     def stop(self):
         self.timer.shutdown()
-
-    def is_ready(self):
+    
+    def connected(self):
         if not self.state.connected:
             return False
         pos = self.current_pose.pose.position
@@ -145,3 +144,11 @@ class Mav():
         size = abs(pos.x) + abs(pos.y) + abs(pos.z) + abs(ori.x) + abs(ori.y) + abs(ori.z) + abs(ori.w)
         return size > 0
         
+    def controllable(self):
+        if not self.connected():
+            return False
+        if not self.state.armed:
+            return False
+        if not self.state.mode == State.MODE_PX4_OFFBOARD:
+            return False
+        return True
