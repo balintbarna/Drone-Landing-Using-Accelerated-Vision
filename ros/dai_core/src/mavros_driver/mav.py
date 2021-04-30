@@ -21,6 +21,11 @@ class Mav():
 
         mavros.set_namespace(namespace)
 
+        self.maxdist = rospy.get_param("arrive_maxdist", 0.5) # m
+        self.maxang = rospy.get_param("arrive_maxang", 0.1)
+        self.maxvel = rospy.get_param("arrive_maxvel", 0.1) # m/s
+        self.maxangvel = rospy.get_param("arrive_maxangvel", 0.05)
+
         # setup subscriber
         self._state_sub = rospy.Subscriber(mavros.get_topic('state'), State, self._state_callback)
         self._local_position_sub = rospy.Subscriber(mavros.get_topic('local_position', 'pose'), PoseStamped, self._local_position_callback)
@@ -75,14 +80,10 @@ class Mav():
         return create_setpoint_message_pos_ori(new_point, self.target_pose.orientation)
     
     def has_arrived(self):
-        maxdist = 0.5 # m
-        maxang = 0.1 # 6 deg in rad
-        max_vel = 0.2 # m/s
-        max_angvel = 0.05
-        posgood = self.get_pos_error() < maxdist
-        anggood = self.get_yaw_error() < maxang
-        velgood = self.get_velocity_abs() < max_vel
-        angvelgood = self.get_ang_vel_abs() < max_angvel
+        posgood = self.get_pos_error() < self.maxdist
+        anggood = self.get_yaw_error() < self.maxang
+        velgood = self.get_velocity_abs() < self.maxvel
+        angvelgood = self.get_ang_vel_abs() < self.maxangvel
         if posgood and anggood and velgood and angvelgood:
             return True
         return False
