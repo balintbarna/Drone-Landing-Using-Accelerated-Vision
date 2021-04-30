@@ -20,6 +20,7 @@ class StateMachine():
         self.dist_filter_ratio = rospy.get_param("dist_filter_ratio", 0.9)
         self.xy_max_err = rospy.get_param("xy_max_err", 0.2)
         self.xyz_max_err_before_landing = rospy.get_param("xyz_max_err_before_landing", 0.1)
+        self.takeoff_coords = []
         rospy.Subscriber("/landing_pos_error/local_frame", Point, self.landing_pose_callback)
     
     def landing_pose_callback(self, p = Point()):
@@ -55,10 +56,23 @@ class StateMachine():
 
     def takeoff(self):
         cp = self.mav.current_pose.pose.position
-        p = Point(cp.x, cp.y, cp.z + rospy.get_param("starting_altitude", 1))
+        p = Point(cp.x, cp.y, cp.z + rospy.get_param("starting_altitude", 1.0))
         o = yaw_to_orientation(0)
-        new_target = Pose(p, o)
-        self.mav.set_target_pose(new_target)
+        home = Pose(p, o)
+        self.mav.set_target_pose(home)
+        if rospy.get_param("takeoff_test", True):
+            # make a plus sign (+) movement to test basics
+            d = rospy.get_param("takeoff_test_dist", 1.0)
+            self.takeoff_coords = [
+                Pose(Point(p.x + d, p.y, p.z), o),
+                home,
+                Pose(Point(p.x, p.y + d, p.z), o),
+                home,
+                Pose(Point(p.x - d, p.y, p.z), o),
+                home,
+                Pose(Point(p.x, p.y - d, p.z), o),
+                home
+            ]
         self.set_state(self.state_takeoff)
 
     def state_takeoff(self):
@@ -66,6 +80,9 @@ class StateMachine():
             self.set_state(self.state_wait_for_control)
 
         if (self.mav.has_arrived()):
+            if len(self.takeoff_coords) > 0:
+                self.mav.set_target_pose(self.takeoff_coords.pop(0))
+            else:
             self.set_state(self.state_inch_above_target)
     
     def state_passive(self):
