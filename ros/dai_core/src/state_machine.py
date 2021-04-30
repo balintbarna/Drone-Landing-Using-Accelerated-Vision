@@ -2,6 +2,7 @@ import math
 
 import rospy
 from geometry_msgs.msg import Point, Pose
+from std_msgs.msg import String
 
 from mavros_driver.mav import Mav
 from mavros_driver.message_tools import yaw_to_orientation
@@ -12,6 +13,7 @@ def inf():
 class StateMachine():
     def __init__(self):
         self.state = None
+        self.state_pub = rospy.Publisher("/state_machine/state", String, queue_size=10)
         self.set_state(self.state_startup)
         self.mav = Mav()
         self.landing_pose = Point()
@@ -35,6 +37,7 @@ class StateMachine():
     def set_state(self, new_state):
         old_state = self.state
         self.state = new_state
+        self.state_pub.publish(String(self.get_name(new_state)))
         rospy.logout("New state: {} (was {})".format(self.get_name(new_state), self.get_name(old_state)))
 
     def loop(self):
@@ -83,7 +86,7 @@ class StateMachine():
             if len(self.takeoff_coords) > 0:
                 self.mav.set_target_pose(self.takeoff_coords.pop(0))
             else:
-            self.set_state(self.state_inch_above_target)
+                self.set_state(self.state_inch_above_target)
     
     def state_passive(self):
         pass
