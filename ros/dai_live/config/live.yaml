@@ -1,8 +1,11 @@
 env: "live"
+arrive_maxdist: 0.3
 pid_param_base: 0.5
 dist_filter_ratio: 0.9
 xy_max_err: 0.05
-xyz_max_err_before_landing: 0.03
-target_altitude_from_target: 0.25
-starting_altitude: 1
+xyz_max_err_before_landing: 0.05
+target_altitude_from_target: 0.2
+starting_altitude: 1.0
 pose_rate: 50
+takeoff_test: False
+takeoff_test_dist: 1.0
