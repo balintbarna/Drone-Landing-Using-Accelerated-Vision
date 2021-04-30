@@ -14,8 +14,12 @@ class Transformer():
         self.err_pub.publish(msg)
     
     def cam_frame_to_drone_frame(self, p = Point()):
-        p.y = -p.y
-        p.z = -p.z
+        x = -p.y
+        y = -p.x
+        z = -p.z
+        p.x = x
+        p.y = y
+        p.z = z
 
 def main():
     node = Transformer()
