@@ -81,6 +81,7 @@ class StateMachine():
     def state_takeoff(self):
         if not self.mav.controllable():
             self.set_state(self.state_wait_for_control)
+            return
 
         if (self.mav.has_arrived()):
             if len(self.takeoff_coords) > 0:
@@ -97,6 +98,8 @@ class StateMachine():
     def state_inch_above_target(self):
         if not self.mav.controllable():
             self.set_state(self.state_wait_for_control)
+            self.filtered_distance = inf()
+            return
 
         if (self.landing_pose == None):
             return
@@ -112,6 +115,8 @@ class StateMachine():
     def state_inch_lower_above_target(self):
         if not self.mav.controllable():
             self.set_state(self.state_wait_for_control)
+            self.filtered_distance = inf()
+            return
 
         if (self.landing_pose == None):
             return
