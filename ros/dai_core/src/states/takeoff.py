@@ -1,5 +1,6 @@
-from states.wait_for_control import WaitForControl
-from states.center_target import CenterTarget
+import rospy
+from geometry_msgs.msg import Point, Pose
+from mavros_driver.message_tools import yaw_to_orientation
 
 class TakeOff:
     def __init__(self, sm):
@@ -22,9 +23,12 @@ class TakeOff:
                 Pose(Point(p.x, p.y - d, p.z), o),
                 home
             ]
+        else:
+            self.takeoff_coords = []
 
     def execute(self, sm):
         if not sm.mav.controllable():
+            from states.wait_for_control import WaitForControl
             sm.set_state(WaitForControl(sm))
             return
 
@@ -32,4 +36,5 @@ class TakeOff:
             if len(self.takeoff_coords) > 0:
                 sm.mav.set_target_pose(self.takeoff_coords.pop(0))
             else:
+                from states.center_target import CenterTarget
                 sm.set_state(CenterTarget(sm))

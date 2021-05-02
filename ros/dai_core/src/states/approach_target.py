@@ -1,8 +1,4 @@
-impot rospy
-
-from states.wait_for_control import WaitForControl
-from states.landing import Landing
-
+import rospy
 from states.target_common import *
 
 class ApproachTarget:
@@ -14,10 +10,12 @@ class ApproachTarget:
 
     def execute(self, sm):
         if not sm.mav.controllable():
+            from states.wait_for_control import WaitForControl
             sm.set_state(WaitForControl(sm))
             return
         
         if is_data_old(sm):
+            from states.search import Search
             sm.set_state(Search(sm))
             return
 
@@ -26,7 +24,8 @@ class ApproachTarget:
 
         err = sm.landing_pose
         sm.landing_pose = None
-        if (sm.get_filtered_distance(self, err) < self.xyz_max_err_before_landing):
+        if (get_filtered_distance(self, err) < self.xyz_max_err_before_landing):
+            from states.landing import Landing
             sm.set_state(Landing(sm))
             return
 
@@ -38,4 +37,4 @@ class ApproachTarget:
             return
 
         err.z = z
-        set_mav_pos_from_err(mav, err)
+        set_mav_pos_from_err(sm.mav, err)

@@ -1,6 +1,4 @@
-from states.wait_for_control import WaitForControl
-from states.search import Search
-
+import rospy
 from states.target_common import *
 
 class CenterTarget:
@@ -11,10 +9,12 @@ class CenterTarget:
 
     def execute(self, sm):
         if not sm.mav.controllable():
+            from states.wait_for_control import WaitForControl
             sm.set_state(WaitForControl(sm))
             return
         
         if is_data_old(sm):
+            from states.search import Search
             sm.set_state(Search(sm))
             return
 
@@ -24,9 +24,9 @@ class CenterTarget:
         err = sm.landing_pose
         sm.landing_pose = None
         err.z = 0
-        if (sm.get_filtered_distance(self, err) < self.xy_max_err):
+        if (get_filtered_distance(self, err) < self.xy_max_err):
             from states.approach_target import ApproachTarget
             sm.set_state(ApproachTarget(sm))
             return
 
-        set_mav_pos_from_err(mav, err, False)
+        set_mav_pos_from_err(sm.mav, err, False)

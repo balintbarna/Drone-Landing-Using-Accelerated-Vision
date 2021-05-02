@@ -1,19 +1,10 @@
-import math
-
 import rospy
-from geometry_msgs.msg import Point, Pose
+from geometry_msgs.msg import Point
 from std_msgs.msg import String
 
 from mavros_driver.mav import Mav
-from mavros_driver.message_tools import yaw_to_orientation
 # states
-from states.passive import Passive
 from states.startup import Startup
-from states.wait_for_control import WaitForControl
-from states.takeoff import TakeOff
-from states.center_target import CenterTarget
-
-from states.target_common import *
 
 class StateMachine():
     def __init__(self):
