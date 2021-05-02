@@ -5,8 +5,10 @@ target_label: "stop sign"
 pid_param_base: 0.5
 dist_filter_ratio: 0.9
 xy_max_err: 0.05
-xyz_max_err_before_landing: 0.03
+xyz_max_err_before_landing: 0.05
 target_altitude_from_target: 0.1
-starting_altitude: 5
-pose_rate: 50
+starting_altitude: 2.5
+pose_rate: 10
 auto_arm_offboard: True
+search_dist: 0.9
+takeoff_test: False
