@@ -1,1 +1,49 @@
-<mxfile host="app.diagrams.net" modified="2021-05-06T11:58:56.067Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36" version="14.6.6" etag="sa7o18joNlGU-YVBDE3z" type="github"><diagram id="8fE2BSoT9wLF0G8EXLlE">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-05-06T12:11:18.946Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36" etag="f7bshmLiqNCG-faIu7D1" version="14.6.6" type="github">
+  <diagram id="8fE2BSoT9wLF0G8EXLlE" name="Page-1">
+    <mxGraphModel dx="414" dy="320" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Uhzf3P1HemlspE8KU_p1-1" value="Camera Feed" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;spacingLeft=12;spacingBottom=0;spacingTop=32;" vertex="1" parent="1">
+          <mxGeometry x="250" y="240" width="230" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="Uhzf3P1HemlspE8KU_p1-3" value="" style="endArrow=classic;html=1;strokeColor=#0000FF;fillColor=#0000FF66;endWidth=4.571428571428571;entryX=0.467;entryY=0.46;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="Uhzf3P1HemlspE8KU_p1-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="370" y="310" as="sourcePoint" />
+            <mxPoint x="310" y="275" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Uhzf3P1HemlspE8KU_p1-4" value="&lt;font color=&quot;#000000&quot;&gt;Displacement from center&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FFFFFF;labelBorderColor=#000000;" vertex="1" connectable="0" parent="Uhzf3P1HemlspE8KU_p1-3">
+          <mxGeometry x="-0.5446" y="1" relative="1" as="geometry">
+            <mxPoint x="56" y="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Uhzf3P1HemlspE8KU_p1-2" value="Target Bounding Box" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#FF3333;fontColor=#FFFFFF;fillColor=#00000044;" vertex="1" parent="1">
+          <mxGeometry x="287" y="256" width="60" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="Uhzf3P1HemlspE8KU_p1-5" value="" style="endArrow=classic;html=1;fontColor=#FFFFFF;fillColor=#0000FF66;exitX=0.043;exitY=0.041;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="255.89000000000004" y="245.74" as="sourcePoint" />
+            <mxPoint x="276" y="246" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Uhzf3P1HemlspE8KU_p1-7" value="&lt;font color=&quot;#000000&quot; style=&quot;font-size: 5px;&quot;&gt;X&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FFFFFF;labelBackgroundColor=none;fontSize=5;" vertex="1" connectable="0" parent="Uhzf3P1HemlspE8KU_p1-5">
+          <mxGeometry x="0.443" relative="1" as="geometry">
+            <mxPoint x="5" y="6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Uhzf3P1HemlspE8KU_p1-6" value="" style="endArrow=classic;html=1;fontColor=#FFFFFF;fillColor=#0000FF66;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="256" y="246" as="sourcePoint" />
+            <mxPoint x="256" y="266" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Uhzf3P1HemlspE8KU_p1-8" value="Y" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=5;labelBackgroundColor=none;" vertex="1" connectable="0" parent="Uhzf3P1HemlspE8KU_p1-6">
+          <mxGeometry x="0.6403" y="1" relative="1" as="geometry">
+            <mxPoint x="3" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
