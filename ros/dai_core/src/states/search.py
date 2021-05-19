@@ -22,7 +22,7 @@ class Search:
         if sm.mav.has_arrived():
             h = sm.home.position
             p = Point(h.x + self.rd(), h.y + self.rd(), h.z)
-            o = yaw_to_orientation(0)
+            o = sm.home.orientation
             pose = Pose(p, o)
             sm.mav.set_target_pose(pose)
 
