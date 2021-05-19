@@ -6,7 +6,7 @@ class TakeOff:
     def __init__(self, sm):
         cp = sm.mav.current_pose.pose.position
         p = Point(cp.x, cp.y, cp.z + rospy.get_param("starting_altitude", 1.0))
-        o = yaw_to_orientation(0)
+        o = sm.mav.current_pose.pose.orientation
         home = Pose(p, o)
         sm.home = home
         sm.mav.set_target_pose(home)
