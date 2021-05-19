@@ -1,5 +1,9 @@
 #!/usr/bin/env python
-# DNN sample code based on https://www.codespeedy.com/yolo-object-detection-from-image-with-opencv-and-python/
+'''
+NOTICE
+This work is a derivative of https://www.codespeedy.com/yolo-object-detection-from-image-with-opencv-and-python/
+The setup_net and find_object functions contain elements from the above linked sample code
+'''
 
 # import base libs
 import numpy as np
