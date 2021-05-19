@@ -27,4 +27,4 @@ class Search:
             sm.mav.set_target_pose(pose)
 
     def rd(self):
-        return (random() - 1) * self.search_dist * 2
+        return (random() - 0.5) * self.search_dist * 2
