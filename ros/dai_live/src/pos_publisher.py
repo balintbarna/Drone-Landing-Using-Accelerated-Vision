@@ -11,10 +11,10 @@ from sensor_msgs.msg import Image
 from geometry_msgs.msg import Point
 import zmq
 
-class ZmqTest(Thread):
+class PositionPublisher(Thread):
     def __init__(self):
         Thread.__init__(self)
-        rospy.init_node('zmq_test', anonymous=True)
+        rospy.init_node('position_publisher', anonymous=True)
         self.pose_pub = rospy.Publisher("/landing_pos_error/cam_frame/raw", Point, queue_size=1)
 
         ctx = zmq.Context()
@@ -62,7 +62,7 @@ class ZmqTest(Thread):
         self.pub.close()
 
 def main():
-    node = ZmqTest()
+    node = PositionPublisher()
     try:
         rospy.spin()
     except KeyboardInterrupt:
