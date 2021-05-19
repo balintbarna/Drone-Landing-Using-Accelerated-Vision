@@ -9,13 +9,13 @@ def inf():
 def get_point_magnitude(p = Point()):
     return math.sqrt(p.x*p.x+p.y*p.y+p.z*p.z)
 
-def set_mav_pos_from_err(mav, err, altitude = True):
+def set_mav_pos_from_err(mav, err, home, altitude = True):
     cp = mav.current_pose.pose.position
     z = cp.z - err.z
     if not altitude:
         z = mav.target_pose.position.z
     pos = Point(cp.x - err.x, cp.y - err.y, z)
-    ori = yaw_to_orientation(0)
+    ori = home.orientation
     mav.set_target_pose(Pose(pos, ori))
 
 def get_filtered_distance(state, p = Point()):
