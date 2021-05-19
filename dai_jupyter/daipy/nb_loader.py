@@ -1,3 +1,8 @@
+'''
+NOTICE
+This work is created in large part based on example code in the Jupyter documentation at https://nbviewer.jupyter.org/github/jupyter/notebook/blob/master/docs/source/examples/Notebook/Importing%20Notebooks.ipynb
+'''
+
 import io, os, sys, types
 from IPython import get_ipython
 from nbformat import read
