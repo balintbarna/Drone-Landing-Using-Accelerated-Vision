@@ -49,8 +49,8 @@ class ZmqTest(Thread):
         self.pose_pub.publish(p)
     
     def deserialize_float_msg(self, msg):
-        s = sys.getsizeof(msg)
-        t = 'd' if s is 45 else 'f' if s is 41 else 'err'
+        l = len(msg)
+        t = 'd' if l is 8 else 'f' if l is 4 else 'err'
         value = struct.unpack(t, msg)[0]
         return value
     
