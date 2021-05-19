@@ -37,4 +37,4 @@ class ApproachTarget:
             return
 
         err.z = z
-        set_mav_pos_from_err(sm.mav, err)
+        set_mav_pos_from_err(sm.mav, err, sm.home)

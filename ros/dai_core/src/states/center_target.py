@@ -29,4 +29,4 @@ class CenterTarget:
             sm.set_state(ApproachTarget(sm))
             return
 
-        set_mav_pos_from_err(sm.mav, err, False)
+        set_mav_pos_from_err(sm.mav, err, sm.home, False)
