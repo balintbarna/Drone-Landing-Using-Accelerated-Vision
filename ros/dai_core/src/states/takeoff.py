@@ -10,9 +10,9 @@ class TakeOff:
         home = Pose(p, o)
         sm.home = home
         sm.mav.set_target_pose(home)
-        if rospy.get_param("takeoff_test", True):
+        if rospy.get_param("takeoff_test", False):
             # make a plus sign (+) movement to test movement control
-            d = rospy.get_param("takeoff_test_dist", 1.0)
+            d = rospy.get_param("takeoff_test_dist", 1.)
             self.takeoff_coords = [
                 Pose(Point(p.x + d, p.y, p.z), o),
                 home,
