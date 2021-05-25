@@ -25,6 +25,8 @@ class Mav():
         self.maxang = rospy.get_param("arrive_maxang", 0.1)
         self.maxvel = rospy.get_param("arrive_maxvel", 0.1) # m/s
         self.maxangvel = rospy.get_param("arrive_maxangvel", 0.05)
+        self.target_maxdist = rospy.get_param("target_maxdist", 2.)
+        self.pose_rate = rospy.get_param("pose_rate", 50.)
 
         # setup subscriber
         self._state_sub = rospy.Subscriber(mavros.get_topic('state'), State, self._state_callback)
@@ -71,10 +73,9 @@ class Mav():
         target_arr = point_to_arr(point)
         diff = target_arr - current
         diffsize = np.linalg.norm(diff)
-        max_dist = 2
-        if diffsize < max_dist:
+        if diffsize < self.target_maxdist:
             return create_setpoint_message_pose(self.target_pose)
-        ratio = diffsize / max_dist
+        ratio = diffsize / self.target_maxdist
         true_target = current + diff / ratio
         new_point = arr_to_point(true_target)
         return create_setpoint_message_pos_ori(new_point, self.target_pose.orientation)
@@ -134,8 +135,7 @@ class Mav():
         self.set_mode(0, State.MODE_PX4_LAND)
     
     def start(self):
-        rate = rospy.get_param("pose_rate", 5)
-        self.timer = rospy.Timer(rospy.Duration(1 / float(rate)), self._timer_callback)
+        self.timer = rospy.Timer(rospy.Duration(1 / float(self.pose_rate)), self._timer_callback)
 
     def stop(self):
         self.timer.shutdown()
