@@ -9,7 +9,7 @@ The setup_net and find_object functions contain elements from the above linked s
 import numpy as np
 import math
 from threading import Condition, Thread
-from time import perf_counter
+from time import perf_counter, sleep
 
 # import ROS and CV libraries
 import rospy
@@ -33,6 +33,7 @@ class ObjectDetector(Thread):
         self.fps_pub_filtered = rospy.Publisher("/inferencing_fps/filtered", String, queue_size=1)
         self.fps_pub = rospy.Publisher("/inferencing_fps/raw", String, queue_size=1)
         self.marked_img_pub = rospy.Publisher("/marked_img", Image, queue_size=1)
+        self.extra_delay = rospy.get_param("extra_inferencing_delay", 0.)
         self.start()
     
     def setup_net(self):
@@ -99,6 +100,8 @@ class ObjectDetector(Thread):
         # rospy.logout("height: {}\nwidth: {}\nchannels: {}\n".format(height, width, channels))
         blob = cv2.dnn.blobFromImage(img, 1.0 / 256., (416,416), (0,0,0), True, crop=False)
         self.net.setInput(blob)
+        if self.extra_delay > 0:
+            sleep(self.extra_delay)
         outs=self.net.forward(self.output_layers)
         class_ids=[]
         confidences=[]
