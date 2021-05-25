@@ -31,8 +31,12 @@ class StateMachine():
     def set_state(self, new_state):
         old_state = self._state
         self._state = new_state
-        self._state_pub.publish(String(self.get_name(new_state)))
-        rospy.logout("New state: {} (was {})".format(self.get_name(new_state), self.get_name(old_state)))
+        new_name = self.get_name(new_state)
+        old_name = self.get_name(old_state)
+        time_stamp = rospy.Time.now()
+        time_now = time_stamp.secs + time_stamp.nsecs/pow(10, 9)
+        self._state_pub.publish(String("{} @ {}".format(new_name, time_now)))
+        rospy.logout("New state: {} (was {})".format(new_name, old_name))
 
     def loop(self):
         if callable(self._state):
