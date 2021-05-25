@@ -1,4 +1,4 @@
-from random import *
+from random import seed, random
 import rospy
 from geometry_msgs.msg import Point, Pose
 from mavros_driver.message_tools import yaw_to_orientation
@@ -7,6 +7,7 @@ class Search:
     def __init__(self, sm):
         self.search_dist = rospy.get_param("search_dist", 0.9)
         sm.landing_pose = None
+        seed(0)
 
     def execute(self, sm):
         if not sm.mav.controllable():
