@@ -1,11 +1,8 @@
-import rospy
-
 class Startup:
     def __init__(self, sm):
         pass
 
     def execute(self, sm):
-        rospy.logout("execute startup")
         if sm.mav.connected():
             sm.mav.start()
             from states.wait_for_control import WaitForControl
