@@ -41,6 +41,6 @@ class TakeOff:
                 h = sm.home.position
                 v = Point(c.x - h.x, c.y - h.y, c.z - h.z)
                 d = sqrt(v.x*v.x + v.y*v.y + v.z*v.z)
-                print("takeoff distance error: {}".format(d))
+                print("takeoff distance error: {}\n---------------".format(d))
                 from states.center_target import CenterTarget
                 sm.set_state(CenterTarget(sm))
