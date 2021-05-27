@@ -1,13 +1,14 @@
+import math
+from math import sqrt
 import rospy
 from geometry_msgs.msg import Point, Pose
-from mavros_driver.message_tools import yaw_to_orientation
-from math import sqrt
+from mavros_driver.message_tools import yaw_to_orientation, orientation_to_yaw
 
 class TakeOff:
     def __init__(self, sm):
         cp = sm.mav.current_pose.pose.position
         p = Point(cp.x, cp.y, cp.z + rospy.get_param("starting_altitude", 1.0))
-        o = sm.mav.current_pose.pose.orientation
+        o = yaw_to_orientation(orientation_to_yaw(sm.mav.current_pose.pose.orientation) + math.pi / 2)
         home = Pose(p, o)
         sm.home = home
         sm.mav.set_target_pose(home)
