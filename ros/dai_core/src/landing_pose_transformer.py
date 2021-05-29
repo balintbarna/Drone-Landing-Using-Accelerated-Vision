@@ -3,7 +3,7 @@
 from math import cos, sin, pow
 import rospy
 from std_msgs.msg import String
-from geometry_msgs.msg import Point, Quaternion
+from geometry_msgs.msg import Point, Quaternion, PoseStamped
 from tf.transformations import euler_from_quaternion
 
 def orientation_to_yaw(orientation = Quaternion()):
@@ -17,12 +17,12 @@ class Transformer():
         self.last_pub = None
         rospy.init_node('landing_pose_transformer', anonymous=True)
         rospy.Subscriber("/landing_pos_error/drone_frame", Point, self.landing_pose_callback, queue_size=1)
-        rospy.Subscriber("/mavros/local_position/pose/pose/orientation", Quaternion, self.orientation_callback, queue_size=1)
+        rospy.Subscriber("/mavros/local_position/pose", PoseStamped, self.orientation_callback, queue_size=1)
         self.err_pub = rospy.Publisher("/landing_pos_error/local_frame", Point, queue_size=1)
         self.rate_pub = rospy.Publisher("/landing_pos_error/update_duration", String, queue_size=1)
 
-    def orientation_callback(self, msg = Quaternion()):
-        self.orientation = msg
+    def orientation_callback(self, msg = PoseStamped()):
+        self.orientation = msg.pose.orientation
     
     def landing_pose_callback(self, msg = Point()):
         self.drone_frame_to_local(msg)
