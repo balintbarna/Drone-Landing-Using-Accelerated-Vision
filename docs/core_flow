@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-05-26T19:09:31.878Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36" etag="avDcmhLzAjj4J5dPEnLr" version="14.6.13" type="github">
+<mxfile host="app.diagrams.net" modified="2021-07-12T14:35:37.381Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" etag="8h8YkJ9oGfrLUfH1Kf9y" version="14.8.5" type="github">
   <diagram id="P-o4YiSXi7MskfVmoW9N" name="Page-1">
-    <mxGraphModel dx="870" dy="672" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="981" dy="550" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -130,7 +130,7 @@
         <mxCell id="L5FV_ojuKyKSMaTs2i2v-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;labelBackgroundColor=#E6E6E6;fontSize=12;" parent="1" source="L5FV_ojuKyKSMaTs2i2v-16" target="L5FV_ojuKyKSMaTs2i2v-50" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="L5FV_ojuKyKSMaTs2i2v-101" value="&lt;font style=&quot;font-size: 5px; line-height: 100%;&quot;&gt;&lt;b style=&quot;font-size: 5px;&quot;&gt;SUB:&lt;/b&gt;&lt;br style=&quot;font-size: 5px;&quot;&gt;/mavros/state&lt;br style=&quot;font-size: 5px;&quot;&gt;/mavros/local_position/pose&lt;br style=&quot;font-size: 5px;&quot;&gt;/mavros/local_position/velocity_body&lt;br style=&quot;font-size: 5px;&quot;&gt;&lt;b style=&quot;font-size: 5px;&quot;&gt;PUB:&lt;/b&gt;&lt;br style=&quot;font-size: 5px;&quot;&gt;/mavros/setpoint_position/local&lt;br style=&quot;font-size: 5px;&quot;&gt;&lt;b style=&quot;font-size: 5px;&quot;&gt;CLIENT:&lt;/b&gt;&lt;br style=&quot;font-size: 5px;&quot;&gt;/mavros/cmd/arming&lt;br style=&quot;font-size: 5px;&quot;&gt;/mavros/set_mode&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=5;labelBorderColor=#000000;" parent="L5FV_ojuKyKSMaTs2i2v-48" vertex="1" connectable="0">
+        <mxCell id="L5FV_ojuKyKSMaTs2i2v-101" value="&lt;font style=&quot;font-size: 9px ; line-height: 100%&quot;&gt;State, Pose, Velocity&lt;br&gt;Setpoint pose&lt;br&gt;Arming, Mode&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=5;labelBorderColor=#000000;" parent="L5FV_ojuKyKSMaTs2i2v-48" vertex="1" connectable="0">
           <mxGeometry x="0.1722" y="-2" relative="1" as="geometry">
             <mxPoint x="7" y="20" as="offset" />
           </mxGeometry>
@@ -193,7 +193,7 @@
         <mxCell id="L5FV_ojuKyKSMaTs2i2v-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=0.667;entryY=0.164;entryDx=0;entryDy=0;entryPerimeter=0;labelBackgroundColor=#E6E6E6;fontSize=12;" parent="1" source="L5FV_ojuKyKSMaTs2i2v-50" target="L5FV_ojuKyKSMaTs2i2v-1" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="L5FV_ojuKyKSMaTs2i2v-50" value="&lt;font style=&quot;font-size: 7px&quot;&gt;mav.py&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffffff;" parent="1" vertex="1">
+        <mxCell id="L5FV_ojuKyKSMaTs2i2v-50" value="&lt;font style=&quot;font-size: 8px&quot;&gt;mav.py&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=12;fillColor=#ffffff;" parent="1" vertex="1">
           <mxGeometry x="520" y="483" width="30" height="37" as="geometry" />
         </mxCell>
         <mxCell id="L5FV_ojuKyKSMaTs2i2v-55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;labelBackgroundColor=#E6E6E6;fontSize=12;" parent="1" source="L5FV_ojuKyKSMaTs2i2v-51" target="L5FV_ojuKyKSMaTs2i2v-50" edge="1">
